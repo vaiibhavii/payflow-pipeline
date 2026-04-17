@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PayFlow — Digital Payments Intelligence Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #0F0A1E;
+    --sidebar: #1A1035;
+    --card: #231550;
+    --card2: #1e1244;
+    --border: rgba(168,85,247,0.15);
+    --accent: #A855F7;
+    --accent2: #22D3EE;
+    --danger: #F472B6;
+    --text: #EDE9FE;
+    --sub: #8B7AA5;
+    --glow: rgba(168,85,247,0.25);
+    --glow2: rgba(34,211,238,0.15);
+  }
+  .light {
+    --bg: #F5F3FF;
+    --sidebar: #EDE9FE;
+    --card: #FFFFFF;
+    --card2: #F3EEFF;
+    --border: rgba(168,85,247,0.2);
+    --accent: #7C3AED;
+    --accent2: #0891B2;
+    --danger: #DB2777;
+    --text: #1E1244;
+    --sub: #6D5A8A;
+    --glow: rgba(124,58,237,0.1);
+    --glow2: rgba(8,145,178,0.1);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    display: flex;
+    min-height: 100vh;
+    transition: background 0.4s ease, color 0.4s ease;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: 220px;
+    min-height: 100vh;
+    background: var(--sidebar);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 24px 0;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    z-index: 100;
+  }
+
+  .logo {
+    padding: 0 24px 28px;
+    border-bottom: 1px solid var(--border);
+  }
+  .logo-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .logo-sub { font-size: 10px; color: var(--sub); margin-top: 2px; letter-spacing: 0.5px; }
+
+  .nav-section { padding: 20px 12px 8px; }
+  .nav-label { font-size: 9px; color: var(--sub); letter-spacing: 1.5px; text-transform: uppercase; padding: 0 12px 8px; }
+
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; border-radius: 10px;
+    font-size: 13px; color: var(--sub);
+    cursor: pointer; transition: all 0.2s;
+    margin-bottom: 2px;
+  }
+  .nav-item:hover { background: var(--glow); color: var(--text); }
+  .nav-item.active {
+    background: linear-gradient(135deg, rgba(168,85,247,0.3), rgba(34,211,238,0.1));
+    color: var(--accent);
+    border: 1px solid var(--border);
+  }
+  .nav-item .icon { font-size: 15px; width: 20px; text-align: center; }
+
+  .sidebar-footer {
+    margin-top: auto;
+    padding: 16px 24px;
+    border-top: 1px solid var(--border);
+  }
+  .pipeline-status {
+    background: var(--card);
+    border-radius: 10px;
+    padding: 12px;
+    border: 1px solid var(--border);
+  }
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #22C55E; display: inline-block; margin-right: 6px; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+  .status-text { font-size: 11px; color: var(--sub); }
+  .status-time { font-size: 10px; color: var(--accent2); margin-top: 4px; }
+
+  /* ── MAIN ── */
+  .main {
+    margin-left: 220px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 28px;
+    background: var(--sidebar);
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 50;
+    backdrop-filter: blur(10px);
+  }
+  .topbar-left { display: flex; flex-direction: column; }
+  .topbar-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; }
+  .topbar-sub { font-size: 12px; color: var(--sub); margin-top: 2px; }
+  .topbar-right { display: flex; align-items: center; gap: 12px; }
+
+  .filter-chip {
+    display: flex; align-items: center; gap: 6px;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 8px; padding: 7px 14px;
+    font-size: 12px; color: var(--sub); cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-chip:hover { border-color: var(--accent); color: var(--accent); }
+  .filter-chip select {
+    background: transparent; border: none; color: inherit;
+    font-family: inherit; font-size: 12px; cursor: pointer; outline: none;
+  }
+
+  /* ── CONTENT ── */
+  .content { padding: 24px 28px; flex: 1; }
+
+  /* ── KPI CARDS ── */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .kpi-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+  }
+  .kpi-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px var(--glow);
+  }
+  .kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+  }
+  .kpi-card.c2::before { background: linear-gradient(90deg, var(--accent2), #6366F1); }
+  .kpi-card.c3::before { background: linear-gradient(90deg, #F472B6, var(--accent)); }
+  .kpi-card.c4::before { background: linear-gradient(90deg, #22C55E, var(--accent2)); }
+
+  .kpi-glow {
+    position: absolute; top: -20px; right: -20px;
+    width: 80px; height: 80px; border-radius: 50%;
+    background: var(--accent); opacity: 0.06; filter: blur(20px);
+  }
+  .kpi-label { font-size: 11px; color: var(--sub); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 10px; }
+  .kpi-value { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 700; margin-bottom: 8px; }
+  .kpi-change { font-size: 12px; display: flex; align-items: center; gap: 4px; }
+  .up { color: var(--accent2); }
+  .down { color: var(--danger); }
+  .kpi-icon { font-size: 22px; margin-bottom: 8px; opacity: 0.8; }
+
+  /* ── CHARTS ROW ── */
+  .charts-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .chart-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 22px;
+  }
+  .chart-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px; font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .chart-sub { font-size: 11px; color: var(--sub); margin-bottom: 18px; }
+
+  /* SVG charts */
+  .chart-svg { width: 100%; overflow: visible; }
+
+  /* ── BOTTOM ROW ── */
+  .bottom-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  /* ── HEATMAP ── */
+  .heatmap-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 4px;
+    margin-top: 12px;
+  }
+  .heatmap-cell {
+    aspect-ratio: 1;
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 8px; color: transparent;
+    transition: transform 0.15s;
+    cursor: pointer;
+  }
+  .heatmap-cell:hover { transform: scale(1.3); color: white; font-size: 7px; }
+  .h0 { background: var(--card2); }
+  .h1 { background: rgba(168,85,247,0.25); }
+  .h2 { background: rgba(168,85,247,0.45); }
+  .h3 { background: rgba(168,85,247,0.65); }
+  .h4 { background: rgba(168,85,247,0.85); }
+  .h5 { background: #A855F7; }
+  .month-labels {
+    display: grid; grid-template-columns: repeat(12, 1fr);
+    gap: 4px; margin-top: 6px;
+  }
+  .month-label { font-size: 8px; color: var(--sub); text-align: center; }
+
+  /* ── TABLE ── */
+  .mom-table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+  .mom-table th {
+    font-size: 10px; color: var(--sub); text-transform: uppercase;
+    letter-spacing: 0.8px; padding: 8px 10px; text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .mom-table td { font-size: 12px; padding: 10px 10px; border-bottom: 1px solid rgba(168,85,247,0.05); }
+  .mom-table tr:hover td { background: var(--glow); }
+
+  /* ── PIPELINE STATUS ── */
+  .pipeline-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 22px;
+  }
+  .layer-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .layer-row:last-child { border-bottom: none; }
+  .layer-left { display: flex; align-items: center; gap: 12px; }
+  .layer-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .bronze { background: #CD7F32; box-shadow: 0 0 8px rgba(205,127,50,0.5); }
+  .silver { background: #C0C0C0; box-shadow: 0 0 8px rgba(192,192,192,0.5); }
+  .gold { background: #FFD700; box-shadow: 0 0 8px rgba(255,215,0,0.5); }
+  .layer-name { font-size: 13px; font-weight: 500; }
+  .layer-desc { font-size: 10px; color: var(--sub); margin-top: 2px; }
+  .layer-badge {
+    font-size: 10px; padding: 3px 10px; border-radius: 20px;
+    background: rgba(34,197,94,0.15); color: #22C55E;
+    border: 1px solid rgba(34,197,94,0.3);
+  }
+  .layer-count { font-size: 11px; color: var(--sub); }
+
+  /* ── BAR CHART ── */
+  .bar-wrap { display: flex; align-items: flex-end; gap: 10px; height: 120px; margin-top: 16px; }
+  .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .bar {
+    width: 100%; border-radius: 6px 6px 0 0;
+    background: linear-gradient(180deg, var(--accent), rgba(168,85,247,0.3));
+    transition: opacity 0.2s; cursor: pointer; position: relative;
+  }
+  .bar:hover { opacity: 0.8; }
+  .bar-label { font-size: 9px; color: var(--sub); }
+  .bar-val { font-size: 9px; color: var(--accent); font-weight: 600; }
+
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+</style>
+</head>
+<body id="body">
+
+<aside class="sidebar">
+  <div class="logo">
+    <div class="logo-name">PayFlow</div>
+    <div class="logo-sub">Digital Payments Intelligence</div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">Analytics</div>
+    <div class="nav-item active"><span class="icon">📊</span> Overview</div>
+    <div class="nav-item"><span class="icon">📈</span> Trend Analysis</div>
+    <div class="nav-item"><span class="icon">🗓️</span> Yearly View</div>
+    <div class="nav-item"><span class="icon">🏦</span> Bank Insights</div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">Pipeline</div>
+    <div class="nav-item"><span class="icon">⚙️</span> Pipeline Status</div>
+    <div class="nav-item"><span class="icon">🪵</span> Data Layers</div>
+    <div class="nav-item"><span class="icon">📋</span> Logs</div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">Settings</div>
+    <div class="nav-item"><span class="icon">🔔</span> Alerts</div>
+    <div class="nav-item"><span class="icon">⚙️</span> Settings</div>
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="pipeline-status">
+      <div><span class="status-dot"></span><span class="status-text">Pipeline Active</span></div>
+      <div class="status-time">Last run: Today, 06:00 AM</div>
+      <div class="status-time" style="color:var(--sub);margin-top:2px">96 records processed</div>
+    </div>
+  </div>
+</aside>
+
+<main class="main">
+
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="topbar-title">UPI Transaction Intelligence</div>
+      <div class="topbar-sub">India Digital Payments — Apr 2016 to Feb 2024</div>
+    </div>
+    <div class="topbar-right">
+      <div class="filter-chip">
+        📅 <select><option>All Years</option><option>FY2023-24</option><option>FY2022-23</option><option>FY2021-22</option></select>
+      </div>
+      <div class="filter-chip">
+        📆 <select><option>All Quarters</option><option>Q1</option><option>Q2</option><option>Q3</option><option>Q4</option></select>
+      </div>
+      <div class="filter-chip">
+        📁 <select><option>All Layers</option><option>Bronze</option><option>Silver</option><option>Gold</option></select>
+      </div>
+      <div class="nav-item" id="theme-btn" style="cursor: pointer; margin-bottom: 0;">
+        <span id="toggle-icon">☀️</span> <span id="toggle-text">Light</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-glow"></div>
+        <div class="kpi-icon">💳</div>
+        <div class="kpi-label">Total Volume</div>
+        <div class="kpi-value">86,762 <span style="font-size:13px;color:var(--sub)">Mn</span></div>
+        <div class="kpi-change up">▲ 12.4% vs last year</div>
+      </div>
+      <div class="kpi-card c2">
+        <div class="kpi-glow" style="background:var(--accent2)"></div>
+        <div class="kpi-icon">₹</div>
+        <div class="kpi-label">Total Value</div>
+        <div class="kpi-value">139.2 <span style="font-size:13px;color:var(--sub)">Lakh Cr</span></div>
+        <div class="kpi-change up">▲ 18.7% vs last year</div>
+      </div>
+      <div class="kpi-card c3">
+        <div class="kpi-glow" style="background:#F472B6"></div>
+        <div class="kpi-icon">🎯</div>
+        <div class="kpi-label">Avg Ticket Size</div>
+        <div class="kpi-value">₹1,604</div>
+        <div class="kpi-change down">▼ 3.2% vs last year</div>
+      </div>
+      <div class="kpi-card c4">
+        <div class="kpi-glow" style="background:#22C55E"></div>
+        <div class="kpi-icon">🏦</div>
+        <div class="kpi-label">Active Banks</div>
+        <div class="kpi-value">574</div>
+        <div class="kpi-change up">▲ 8 new this year</div>
+      </div>
+    </div>
+
+    <div class="charts-row">
+      <div class="chart-card">
+        <div class="chart-title">Monthly Transaction Volume Trend</div>
+        <div class="chart-sub">Millions of transactions · 2016–2024</div>
+        <svg class="chart-svg" viewBox="0 0 600 180" height="180">
+          <defs>
+            <linearGradient id="lineGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#A855F7" stop-opacity="0.4"/>
+              <stop offset="100%" stop-color="#A855F7" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <line x1="40" y1="20" x2="40" y2="155" stroke="rgba(168,85,247,0.1)" stroke-width="1"/>
+          <line x1="40" y1="155" x2="590" y2="155" stroke="rgba(168,85,247,0.1)" stroke-width="1"/>
+          <line x1="40" y1="60" x2="590" y2="60" stroke="rgba(168,85,247,0.06)" stroke-width="1" stroke-dasharray="4,4"/>
+          <line x1="40" y1="100" x2="590" y2="100" stroke="rgba(168,85,247,0.06)" stroke-width="1" stroke-dasharray="4,4"/>
+          <text x="35" y="24" text-anchor="end" font-size="9" fill="#8B7AA5">12K</text>
+          <text x="35" y="64" text-anchor="end" font-size="9" fill="#8B7AA5">8K</text>
+          <text x="35" y="104" text-anchor="end" font-size="9" fill="#8B7AA5">4K</text>
+          <text x="35" y="158" text-anchor="end" font-size="9" fill="#8B7AA5">0</text>
+          <polygon points="40,152 80,148 120,143 160,136 200,126 240,113 280,98 320,80 360,62 400,46 440,36 480,28 520,24 560,22 590,21 590,155 40,155" fill="url(#lineGrad)"/>
+          <polyline points="40,152 80,148 120,143 160,136 200,126 240,113 280,98 320,80 360,62 400,46 440,36 480,28 520,24 560,22 590,21" fill="none" stroke="#A855F7" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+          <circle cx="590" cy="21" r="4" fill="#A855F7" stroke="#0F0A1E" stroke-width="2"/>
+          <circle cx="40" cy="152" r="3" fill="#A855F7" stroke="#0F0A1E" stroke-width="2"/>
+          <text x="40" y="170" text-anchor="middle" font-size="9" fill="#8B7AA5">2016</text>
+          <text x="120" y="170" text-anchor="middle" font-size="9" fill="#8B7AA5">2017</text>
+          <text x="200" y="170" text-anchor="middle" font-size="9" fill="#8B7AA5">2018</text>
+          <text x="290" y="170" text-anchor="middle" font-size="9" fill="#8B7AA5">2019</text>
+          <text x="380" y="170" text-anchor="middle" font-size="9" fill="#8B7AA5">2021</text>
+          <text x="470" y="170" text-anchor="middle" font-size="9" fill="#8B7AA5">2023</text>
+          <text x="590" y="170" text-anchor="middle" font-size="9" fill="#8B7AA5">2024</text>
+          <line x1="240" y1="25" x2="240" y2="155" stroke="rgba(244,114,182,0.3)" stroke-width="1" stroke-dasharray="3,3"/>
+          <text x="244" y="35" font-size="8" fill="#F472B6">COVID</text>
+        </svg>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-title">Year-wise Transaction Value</div>
+        <div class="chart-sub">₹ in Crores · FY wise</div>
+        <div class="bar-wrap">
+          <div class="bar-col"><div class="bar-val">2.1L</div><div class="bar" style="height:30%"></div><div class="bar-label">FY19</div></div>
+          <div class="bar-col"><div class="bar-val">3.6L</div><div class="bar" style="height:42%"></div><div class="bar-label">FY20</div></div>
+          <div class="bar-col"><div class="bar-val">5.5L</div><div class="bar" style="height:55%"></div><div class="bar-label">FY21</div></div>
+          <div class="bar-col"><div class="bar-val">8.4L</div><div class="bar" style="height:68%"></div><div class="bar-label">FY22</div></div>
+          <div class="bar-col"><div class="bar-val">13.9L</div><div class="bar" style="height:82%"></div><div class="bar-label">FY23</div></div>
+          <div class="bar-col"><div class="bar-val">20.6L</div><div class="bar" style="height:100%; background:linear-gradient(180deg,#22D3EE,rgba(34,211,238,0.3))"></div><div class="bar-label" style="color:var(--accent2)">FY24</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-row">
+      <div class="chart-card">
+        <div class="chart-title">Peak Month Heatmap</div>
+        <div class="chart-sub">Transaction intensity by month</div>
+        <div style="margin-top:12px">
+          <div style="font-size:10px;color:var(--sub);margin-bottom:6px">FY 2023-24</div>
+          <div class="heatmap-grid">
+            <div class="heatmap-cell h2">A</div><div class="heatmap-cell h3">M</div><div class="heatmap-cell h3">J</div>
+            <div class="heatmap-cell h4">J</div><div class="heatmap-cell h3">A</div><div class="heatmap-cell h4">S</div>
+            <div class="heatmap-cell h5">O</div><div class="heatmap-cell h4">N</div><div class="heatmap-cell h3">D</div>
+            <div class="heatmap-cell h5">J</div><div class="heatmap-cell h4">F</div><div class="heatmap-cell h5">M</div>
+          </div>
+          <div class="month-labels">
+            <div class="month-label">Apr</div><div class="month-label">May</div><div class="month-label">Jun</div>
+            <div class="month-label">Jul</div><div class="month-label">Aug</div><div class="month-label">Sep</div>
+            <div class="month-label">Oct</div><div class="month-label">Nov</div><div class="month-label">Dec</div>
+            <div class="month-label">Jan</div><div class="month-label">Feb</div><div class="month-label">Mar</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-title">Month-over-Month Growth</div>
+        <div class="chart-sub">Volume & Value growth % · Recent months</div>
+        <table class="mom-table">
+          <thead><tr><th>Month</th><th>Vol Growth</th><th>Val Growth</th></tr></thead>
+          <tbody>
+            <tr><td>Oct 2023</td><td class="up">▲ 7.2%</td><td class="up">▲ 9.1%</td></tr>
+            <tr><td>Nov 2023</td><td class="up">▲ 5.8%</td><td class="up">▲ 6.4%</td></tr>
+            <tr><td>Dec 2023</td><td class="down">▼ 2.1%</td><td class="up">▲ 3.2%</td></tr>
+            <tr><td>Jan 2024</td><td class="up">▲ 11.3%</td><td class="up">▲ 14.2%</td></tr>
+            <tr><td>Feb 2024</td><td class="up">▲ 8.9%</td><td class="up">▲ 10.5%</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="pipeline-card">
+        <div class="chart-title">Pipeline Status</div>
+        <div class="chart-sub">Medallion Architecture · GCP + BigQuery</div>
+        <div class="layer-row">
+          <div class="layer-left"><div class="layer-dot bronze"></div><div><div class="layer-name">Bronze Layer</div><div class="layer-desc">Raw CSV → GCS · via dlt</div></div></div>
+          <div style="text-align:right"><div class="layer-badge">✓ Active</div><div class="layer-count" style="margin-top:4px">96 records</div></div>
+        </div>
+        <div class="layer-row">
+          <div class="layer-left"><div class="layer-dot silver"></div><div><div class="layer-name">Silver Layer</div><div class="layer-desc">Cleaned · PySpark</div></div></div>
+          <div style="text-align:right"><div class="layer-badge">✓ Active</div><div class="layer-count" style="margin-top:4px">94 records</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+  // 1. Grab our elements directly
+  const themeBtn = document.getElementById('theme-btn');
+  const body = document.getElementById('body');
+  const toggleIcon = document.getElementById('toggle-icon');
+  const toggleText = document.getElementById('toggle-text');
+  
+  const navItems = document.querySelectorAll('.nav-item');
+  const contentArea = document.querySelector('.content');
+  const overviewHTML = contentArea.innerHTML;
+
+  // 2. Attach Theme Toggle (Raw onclick, no event listeners to get trapped)
+  themeBtn.onclick = function() {
+      if (body.classList.contains('light')) {
+          body.classList.remove('light');
+          toggleIcon.textContent = '☀️';
+          toggleText.textContent = 'Light';
+      } else {
+          body.classList.add('light');
+          toggleIcon.textContent = '🌙';
+          toggleText.textContent = 'Dark';
+      }
+  };
+
+  // 3. Attach Sidebar Logic
+  const trendHTML = `
+    <div class="kpi-card" style="margin-bottom: 20px;">
+      <div class="chart-title">Trend Analysis Module</div>
+      <div class="chart-sub">System connected to historical data.</div>
+      <div style="height: 300px; display: flex; align-items: center; justify-content: center; color: var(--sub); border: 1px dashed var(--border); border-radius: 10px; margin-top: 20px;">
+         [ Looker Studio Dashboard Embedded Here ]
+      </div>
+    </div>
+  `;
+
+  navItems.forEach(item => {
+      // Ignore the theme button for sidebar highlighting
+      if (item.id === 'theme-btn') return;
+
+      item.onclick = function() {
+          // Remove active from all sidebar items
+          navItems.forEach(nav => {
+              if (nav.id !== 'theme-btn') nav.classList.remove('active');
+          });
+          
+          this.classList.add('active');
+
+          // Swap content
+          if (this.textContent.includes('Overview')) {
+              contentArea.innerHTML = overviewHTML;
+          } else if (this.textContent.includes('Trend Analysis')) {
+              contentArea.innerHTML = trendHTML;
+          } else {
+              contentArea.innerHTML = '<div class="chart-title" style="padding: 20px;">Module in Development...</div>';
+          }
+      };
+  });
+</script>
+</body>
+</html>
