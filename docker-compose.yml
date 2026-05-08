@@ -48,7 +48,7 @@ services:
     container_name: payflow-kestra
     pull_policy: always
     entrypoint: /bin/bash
-    command: -c 'export JAVA_OPTS="-Dmicronaut.config.files=/app/kestra-config.yml" && /app/kestra server standalone --worker-thread=128'
+    command: server standalone --worker-thread=128
     volumes:
       - kestra-data:/app/storage
       - /var/run/docker.sock:/var/run/docker.sock
