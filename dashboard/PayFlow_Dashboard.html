@@ -3,494 +3,1442 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>PayFlow — Digital Payments Intelligence Platform</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<title>PayFlow — Digital Payments Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
 <style>
-  :root {
-    --bg: #0F0A1E;
-    --sidebar: #1A1035;
-    --card: #231550;
-    --card2: #1e1244;
-    --border: rgba(168,85,247,0.15);
-    --accent: #A855F7;
-    --accent2: #22D3EE;
-    --danger: #F472B6;
-    --text: #EDE9FE;
-    --sub: #8B7AA5;
-    --glow: rgba(168,85,247,0.25);
-    --glow2: rgba(34,211,238,0.15);
-  }
-  .light {
-    --bg: #F5F3FF;
-    --sidebar: #EDE9FE;
-    --card: #FFFFFF;
-    --card2: #F3EEFF;
-    --border: rgba(168,85,247,0.2);
-    --accent: #7C3AED;
-    --accent2: #0891B2;
-    --danger: #DB2777;
-    --text: #1E1244;
-    --sub: #6D5A8A;
-    --glow: rgba(124,58,237,0.1);
-    --glow2: rgba(8,145,178,0.1);
-  }
+:root {
+  --bg:       #080C14;
+  --surface:  #0F1623;
+  --card:     #141D2B;
+  --card2:    #1A2235;
+  --border:   #1E2D42;
+  --border2:  #243347;
+  --mint:     #00C9A7;
+  --mint-dim: rgba(0,201,167,0.12);
+  --mint-glow:rgba(0,201,167,0.25);
+  --amber:    #F5A623;
+  --red:      #FF5670;
+  --blue:     #4E9EFF;
+  --text:     #E2EAF4;
+  --sub:      #5A7394;
+  --sub2:     #3D5470;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh;overflow-x:hidden;}
 
-  * { margin:0; padding:0; box-sizing:border-box; }
+/* ── SIDEBAR ── */
+.sidebar{
+  width:228px;min-height:100vh;background:var(--surface);
+  border-right:1px solid var(--border);display:flex;flex-direction:column;
+  position:fixed;top:0;left:0;bottom:0;z-index:100;
+  padding:0;
+}
+.logo-wrap{
+  padding:28px 24px 22px;
+  border-bottom:1px solid var(--border);
+}
+.logo-mark{
+  display:flex;align-items:center;gap:10px;margin-bottom:4px;
+}
+.logo-icon{
+  width:32px;height:32px;background:var(--mint);border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'DM Mono',monospace;font-size:13px;font-weight:500;
+  color:#080C14;flex-shrink:0;
+}
+.logo-name{font-family:'DM Mono',monospace;font-size:17px;font-weight:500;letter-spacing:0.5px;color:var(--text);}
+.logo-sub{font-size:10px;color:var(--sub);letter-spacing:0.4px;margin-left:42px;}
 
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    display: flex;
-    min-height: 100vh;
-    transition: background 0.4s ease, color 0.4s ease;
-  }
+.nav-group{padding:20px 12px 4px;}
+.nav-label{font-size:9px;color:var(--sub2);letter-spacing:1.8px;text-transform:uppercase;padding:0 10px 10px;}
+.nav-item{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 10px;border-radius:7px;
+  font-size:13px;color:var(--sub);cursor:pointer;
+  transition:all 0.15s;margin-bottom:1px;
+  border:1px solid transparent;
+}
+.nav-item:hover{background:var(--card);color:var(--text);}
+.nav-item.active{
+  background:var(--mint-dim);color:var(--mint);
+  border-color:rgba(0,201,167,0.2);
+}
+.nav-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--sub2);flex-shrink:0;transition:all 0.15s;
+}
+.nav-item.active .nav-dot,.nav-item:hover .nav-dot{background:var(--mint);}
 
-  /* ── SIDEBAR ── */
-  .sidebar {
-    width: 220px;
-    min-height: 100vh;
-    background: var(--sidebar);
-    border-right: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    padding: 24px 0;
-    position: fixed;
-    top: 0; left: 0; bottom: 0;
-    z-index: 100;
-  }
+.sidebar-footer{
+  margin-top:auto;padding:16px;border-top:1px solid var(--border);
+}
+.pipeline-pill{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:8px;padding:12px 14px;
+}
+.pill-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.pill-label{font-size:10px;color:var(--sub);letter-spacing:0.5px;}
+.pulse-dot{
+  width:7px;height:7px;border-radius:50%;background:var(--mint);
+  animation:pulse 2s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 var(--mint-glow);}50%{opacity:0.7;box-shadow:0 0 0 5px transparent;}}
+.pill-val{font-family:'DM Mono',monospace;font-size:11px;color:var(--mint);}
+.pill-sub{font-size:9px;color:var(--sub2);}
 
-  .logo {
-    padding: 0 24px 28px;
-    border-bottom: 1px solid var(--border);
-  }
-  .logo-name {
-    font-family: 'Syne', sans-serif;
-    font-size: 22px;
-    font-weight: 800;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  .logo-sub { font-size: 10px; color: var(--sub); margin-top: 2px; letter-spacing: 0.5px; }
+/* ── MAIN ── */
+.main{margin-left:228px;flex:1;display:flex;flex-direction:column;min-height:100vh;}
 
-  .nav-section { padding: 20px 12px 8px; }
-  .nav-label { font-size: 9px; color: var(--sub); letter-spacing: 1.5px; text-transform: uppercase; padding: 0 12px 8px; }
+/* ── TOPBAR ── */
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 28px;background:var(--surface);
+  border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:50;
+}
+.topbar-left{display:flex;flex-direction:column;gap:2px;}
+.page-title{font-size:16px;font-weight:600;color:var(--text);}
+.page-crumb{font-size:11px;color:var(--sub);}
+.topbar-right{display:flex;align-items:center;gap:10px;}
 
-  .nav-item {
-    display: flex; align-items: center; gap: 10px;
-    padding: 10px 12px; border-radius: 10px;
-    font-size: 13px; color: var(--sub);
-    cursor: pointer; transition: all 0.2s;
-    margin-bottom: 2px;
-  }
-  .nav-item:hover { background: var(--glow); color: var(--text); }
-  .nav-item.active {
-    background: linear-gradient(135deg, rgba(168,85,247,0.3), rgba(34,211,238,0.1));
-    color: var(--accent);
-    border: 1px solid var(--border);
-  }
-  .nav-item .icon { font-size: 15px; width: 20px; text-align: center; }
+.chip{
+  display:flex;align-items:center;gap:6px;
+  background:var(--card);border:1px solid var(--border);
+  border-radius:6px;padding:6px 12px;
+  font-size:11px;color:var(--sub);cursor:pointer;
+  transition:all 0.15s;font-family:'Outfit',sans-serif;
+}
+.chip:hover,.chip:focus{border-color:var(--mint);color:var(--mint);outline:none;}
+.chip select{background:transparent;border:none;color:inherit;font-family:inherit;font-size:11px;cursor:pointer;outline:none;}
 
-  .sidebar-footer {
-    margin-top: auto;
-    padding: 16px 24px;
-    border-top: 1px solid var(--border);
-  }
-  .pipeline-status {
-    background: var(--card);
-    border-radius: 10px;
-    padding: 12px;
-    border: 1px solid var(--border);
-  }
-  .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #22C55E; display: inline-block; margin-right: 6px; animation: pulse 2s infinite; }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
-  .status-text { font-size: 11px; color: var(--sub); }
-  .status-time { font-size: 10px; color: var(--accent2); margin-top: 4px; }
+.theme-btn{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:6px;padding:6px 12px;
+  font-size:11px;color:var(--sub);cursor:pointer;
+  transition:all 0.15s;
+}
+.theme-btn:hover{border-color:var(--mint);color:var(--mint);}
 
-  /* ── MAIN ── */
-  .main {
-    margin-left: 220px;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-  }
+/* ── CONTENT ── */
+.content{padding:24px 28px;flex:1;}
+.page{display:none;}
+.page.active{display:block;}
 
-  /* ── TOPBAR ── */
-  .topbar {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 16px 28px;
-    background: var(--sidebar);
-    border-bottom: 1px solid var(--border);
-    position: sticky; top: 0; z-index: 50;
-    backdrop-filter: blur(10px);
-  }
-  .topbar-left { display: flex; flex-direction: column; }
-  .topbar-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; }
-  .topbar-sub { font-size: 12px; color: var(--sub); margin-top: 2px; }
-  .topbar-right { display: flex; align-items: center; gap: 12px; }
+/* ── KPI GRID ── */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;}
+.kpi-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:10px;padding:18px 20px;
+  position:relative;overflow:hidden;cursor:pointer;
+  transition:transform 0.2s,border-color 0.2s;
+}
+.kpi-card:hover{transform:translateY(-2px);border-color:var(--border2);}
+.kpi-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.kpi-label{font-size:10px;color:var(--sub);text-transform:uppercase;letter-spacing:1px;}
+.kpi-badge{
+  font-size:9px;padding:2px 8px;border-radius:20px;
+  font-family:'DM Mono',monospace;
+}
+.badge-up{background:rgba(0,201,167,0.12);color:var(--mint);border:1px solid rgba(0,201,167,0.2);}
+.badge-down{background:rgba(255,86,112,0.1);color:var(--red);border:1px solid rgba(255,86,112,0.2);}
+.kpi-val{font-family:'DM Mono',monospace;font-size:28px;font-weight:500;color:var(--text);margin-bottom:4px;line-height:1;}
+.kpi-unit{font-size:12px;color:var(--sub);font-family:'Outfit',sans-serif;}
+.kpi-sub{font-size:11px;color:var(--sub);margin-top:6px;}
+.kpi-accent-bar{
+  position:absolute;bottom:0;left:0;right:0;height:2px;
+}
+.mint-bar{background:linear-gradient(90deg,var(--mint),transparent);}
+.amber-bar{background:linear-gradient(90deg,var(--amber),transparent);}
+.red-bar{background:linear-gradient(90deg,var(--red),transparent);}
+.blue-bar{background:linear-gradient(90deg,var(--blue),transparent);}
 
-  .filter-chip {
-    display: flex; align-items: center; gap: 6px;
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: 8px; padding: 7px 14px;
-    font-size: 12px; color: var(--sub); cursor: pointer;
-    transition: all 0.2s;
-  }
-  .filter-chip:hover { border-color: var(--accent); color: var(--accent); }
-  .filter-chip select {
-    background: transparent; border: none; color: inherit;
-    font-family: inherit; font-size: 12px; cursor: pointer; outline: none;
-  }
+/* ── CHART LAYOUT ── */
+.charts-row{display:grid;gap:14px;margin-bottom:20px;}
+.cols-2-1{grid-template-columns:2fr 1fr;}
+.cols-3{grid-template-columns:1fr 1fr 1fr;}
+.cols-2{grid-template-columns:1fr 1fr;}
+.col-full{grid-template-columns:1fr;}
 
-  /* ── CONTENT ── */
-  .content { padding: 24px 28px; flex: 1; }
+.chart-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:10px;padding:20px;
+}
+.card-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;}
+.card-title{font-size:13px;font-weight:600;color:var(--text);}
+.card-sub{font-size:10px;color:var(--sub);margin-top:3px;}
+.card-tag{
+  font-size:9px;padding:3px 8px;border-radius:4px;
+  background:var(--card2);color:var(--sub);border:1px solid var(--border);
+  font-family:'DM Mono',monospace;
+}
+.chart-wrap{position:relative;height:240px;}
+.chart-wrap-lg{position:relative;height:300px;}
+.chart-wrap-sm{position:relative;height:160px;}
 
-  /* ── KPI CARDS ── */
-  .kpi-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-    margin-bottom: 24px;
-  }
+/* ── MEDALLION PIPELINE ── */
+.medallion-flow{
+  display:flex;align-items:center;gap:0;margin:12px 0;
+}
+.layer-block{
+  flex:1;background:var(--card2);border:1px solid var(--border);
+  border-radius:8px;padding:14px 16px;text-align:center;
+  position:relative;
+}
+.layer-arrow{
+  width:32px;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  color:var(--sub2);font-size:18px;
+}
+.layer-icon{font-size:20px;margin-bottom:6px;}
+.layer-name{font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px;}
+.layer-desc{font-size:9px;color:var(--sub);}
+.layer-count{
+  font-family:'DM Mono',monospace;font-size:11px;
+  color:var(--mint);margin-top:8px;
+}
+.layer-status{
+  display:inline-flex;align-items:center;gap:4px;
+  font-size:9px;padding:2px 7px;border-radius:20px;margin-top:6px;
+}
+.status-ok{background:rgba(0,201,167,0.1);color:var(--mint);border:1px solid rgba(0,201,167,0.2);}
+.status-warn{background:rgba(245,166,35,0.1);color:var(--amber);border:1px solid rgba(245,166,35,0.2);}
 
-  .kpi-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 20px;
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.2s, box-shadow 0.2s;
-    cursor: pointer;
-  }
-  .kpi-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 40px var(--glow);
-  }
-  .kpi-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, var(--accent), var(--accent2));
-  }
-  .kpi-card.c2::before { background: linear-gradient(90deg, var(--accent2), #6366F1); }
-  .kpi-card.c3::before { background: linear-gradient(90deg, #F472B6, var(--accent)); }
-  .kpi-card.c4::before { background: linear-gradient(90deg, #22C55E, var(--accent2)); }
+/* ── TOOL CARDS ── */
+.tool-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px;}
+.tool-card{
+  background:var(--card2);border:1px solid var(--border);
+  border-radius:8px;padding:12px 14px;
+  display:flex;align-items:center;gap:10px;
+}
+.tool-icon{font-size:18px;flex-shrink:0;}
+.tool-name{font-size:11px;font-weight:600;color:var(--text);}
+.tool-role{font-size:9px;color:var(--sub);margin-top:2px;}
+.tool-badge{
+  margin-left:auto;font-size:8px;padding:2px 6px;
+  border-radius:3px;font-family:'DM Mono',monospace;
+}
+.tb-live{background:rgba(0,201,167,0.1);color:var(--mint);}
+.tb-config{background:rgba(78,158,255,0.1);color:var(--blue);}
+.tb-docker{background:rgba(245,166,35,0.1);color:var(--amber);}
 
-  .kpi-glow {
-    position: absolute; top: -20px; right: -20px;
-    width: 80px; height: 80px; border-radius: 50%;
-    background: var(--accent); opacity: 0.06; filter: blur(20px);
-  }
-  .kpi-label { font-size: 11px; color: var(--sub); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 10px; }
-  .kpi-value { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 700; margin-bottom: 8px; }
-  .kpi-change { font-size: 12px; display: flex; align-items: center; gap: 4px; }
-  .up { color: var(--accent2); }
-  .down { color: var(--danger); }
-  .kpi-icon { font-size: 22px; margin-bottom: 8px; opacity: 0.8; }
+/* ── KAFKA STREAM ── */
+.stream-terminal{
+  background:#050911;border:1px solid var(--border);
+  border-radius:8px;padding:16px;font-family:'DM Mono',monospace;
+  font-size:11px;height:320px;overflow-y:auto;margin-top:12px;
+}
+.stream-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:12px;padding-bottom:10px;
+  border-bottom:1px solid var(--border);
+}
+.stream-title{font-size:12px;color:var(--mint);font-family:'DM Mono',monospace;}
+.stream-controls{display:flex;gap:8px;}
+.ctrl-btn{
+  font-size:10px;padding:4px 10px;border-radius:4px;cursor:pointer;
+  border:1px solid var(--border);background:var(--card);color:var(--sub);
+  font-family:'DM Mono',monospace;transition:all 0.15s;
+}
+.ctrl-btn:hover,.ctrl-btn.active-ctrl{border-color:var(--mint);color:var(--mint);}
+.log-line{margin-bottom:3px;line-height:1.5;}
+.log-ts{color:var(--sub2);}
+.log-topic{color:var(--blue);}
+.log-part{color:var(--sub);}
+.log-ok{color:var(--mint);}
+.log-fail{color:var(--red);}
+.log-pending{color:var(--amber);}
+.log-method{color:#9B8DFF;}
 
-  /* ── CHARTS ROW ── */
-  .charts-row {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 16px;
-    margin-bottom: 24px;
-  }
+.stream-stats{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;
+}
+.stat-pill{
+  background:var(--card2);border:1px solid var(--border);
+  border-radius:6px;padding:10px 12px;text-align:center;
+}
+.stat-val{font-family:'DM Mono',monospace;font-size:18px;color:var(--mint);}
+.stat-lbl{font-size:9px;color:var(--sub);text-transform:uppercase;letter-spacing:0.8px;margin-top:2px;}
 
-  .chart-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 22px;
-  }
-  .chart-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 14px; font-weight: 700;
-    margin-bottom: 4px;
-  }
-  .chart-sub { font-size: 11px; color: var(--sub); margin-bottom: 18px; }
+/* ── TABLE ── */
+.data-table{width:100%;border-collapse:collapse;margin-top:12px;font-size:12px;}
+.data-table th{
+  font-size:9px;color:var(--sub);text-transform:uppercase;letter-spacing:1px;
+  padding:8px 12px;text-align:left;border-bottom:1px solid var(--border);
+  font-family:'DM Mono',monospace;
+}
+.data-table td{padding:9px 12px;border-bottom:1px solid rgba(30,45,66,0.5);}
+.data-table tr:hover td{background:var(--card2);}
+.tbl-num{font-family:'DM Mono',monospace;color:var(--mint);}
+.tbl-up{color:var(--mint);}
+.tbl-down{color:var(--red);}
 
-  /* SVG charts */
-  .chart-svg { width: 100%; overflow: visible; }
+/* ── HEATMAP ── */
+.heat-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:3px;margin-top:10px;}
+.heat-cell{
+  aspect-ratio:1;border-radius:3px;cursor:pointer;
+  transition:transform 0.15s;position:relative;
+}
+.heat-cell:hover{transform:scale(1.4);z-index:10;}
+.h0{background:var(--card2);}
+.h1{background:rgba(0,201,167,0.15);}
+.h2{background:rgba(0,201,167,0.3);}
+.h3{background:rgba(0,201,167,0.5);}
+.h4{background:rgba(0,201,167,0.7);}
+.h5{background:var(--mint);}
+.heat-labels{display:grid;grid-template-columns:repeat(12,1fr);gap:3px;margin-top:4px;}
+.heat-lbl{font-size:8px;color:var(--sub);text-align:center;}
+.heat-legend{display:flex;align-items:center;gap:6px;margin-top:8px;font-size:9px;color:var(--sub);}
+.heat-legend-cell{width:10px;height:10px;border-radius:2px;}
 
-  /* ── BOTTOM ROW ── */
-  .bottom-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 16px;
-    margin-bottom: 24px;
-  }
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px;}
 
-  /* ── HEATMAP ── */
-  .heatmap-grid {
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    gap: 4px;
-    margin-top: 12px;
-  }
-  .heatmap-cell {
-    aspect-ratio: 1;
-    border-radius: 4px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 8px; color: transparent;
-    transition: transform 0.15s;
-    cursor: pointer;
-  }
-  .heatmap-cell:hover { transform: scale(1.3); color: white; font-size: 7px; }
-  .h0 { background: var(--card2); }
-  .h1 { background: rgba(168,85,247,0.25); }
-  .h2 { background: rgba(168,85,247,0.45); }
-  .h3 { background: rgba(168,85,247,0.65); }
-  .h4 { background: rgba(168,85,247,0.85); }
-  .h5 { background: #A855F7; }
-  .month-labels {
-    display: grid; grid-template-columns: repeat(12, 1fr);
-    gap: 4px; margin-top: 6px;
-  }
-  .month-label { font-size: 8px; color: var(--sub); text-align: center; }
+/* ── LIGHT MODE ── */
+body.light{
+  --bg:#F0F4F8;--surface:#FFFFFF;--card:#FFFFFF;--card2:#F8FAFC;
+  --border:#E2E8F0;--border2:#CBD5E1;
+  --text:#0F172A;--sub:#64748B;--sub2:#94A3B8;
+  --mint-dim:rgba(0,201,167,0.08);
+}
+body.light .stream-terminal{background:#F8FAFC;border-color:#E2E8F0;}
+body.light .log-ts{color:#94A3B8;}
 
-  /* ── TABLE ── */
-  .mom-table { width: 100%; border-collapse: collapse; margin-top: 12px; }
-  .mom-table th {
-    font-size: 10px; color: var(--sub); text-transform: uppercase;
-    letter-spacing: 0.8px; padding: 8px 10px; text-align: left;
-    border-bottom: 1px solid var(--border);
-  }
-  .mom-table td { font-size: 12px; padding: 10px 10px; border-bottom: 1px solid rgba(168,85,247,0.05); }
-  .mom-table tr:hover td { background: var(--glow); }
+/* ── SECTION TITLE ── */
+.section-title{
+  font-size:11px;text-transform:uppercase;letter-spacing:1.5px;
+  color:var(--sub);margin-bottom:12px;display:flex;align-items:center;gap:8px;
+}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border);}
 
-  /* ── PIPELINE STATUS ── */
-  .pipeline-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 22px;
-  }
-  .layer-row {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 12px 0;
-    border-bottom: 1px solid var(--border);
-  }
-  .layer-row:last-child { border-bottom: none; }
-  .layer-left { display: flex; align-items: center; gap: 12px; }
-  .layer-dot { width: 10px; height: 10px; border-radius: 50%; }
-  .bronze { background: #CD7F32; box-shadow: 0 0 8px rgba(205,127,50,0.5); }
-  .silver { background: #C0C0C0; box-shadow: 0 0 8px rgba(192,192,192,0.5); }
-  .gold { background: #FFD700; box-shadow: 0 0 8px rgba(255,215,0,0.5); }
-  .layer-name { font-size: 13px; font-weight: 500; }
-  .layer-desc { font-size: 10px; color: var(--sub); margin-top: 2px; }
-  .layer-badge {
-    font-size: 10px; padding: 3px 10px; border-radius: 20px;
-    background: rgba(34,197,94,0.15); color: #22C55E;
-    border: 1px solid rgba(34,197,94,0.3);
-  }
-  .layer-count { font-size: 11px; color: var(--sub); }
-
-  /* ── BAR CHART ── */
-  .bar-wrap { display: flex; align-items: flex-end; gap: 10px; height: 120px; margin-top: 16px; }
-  .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
-  .bar {
-    width: 100%; border-radius: 6px 6px 0 0;
-    background: linear-gradient(180deg, var(--accent), rgba(168,85,247,0.3));
-    transition: opacity 0.2s; cursor: pointer; position: relative;
-  }
-  .bar:hover { opacity: 0.8; }
-  .bar-label { font-size: 9px; color: var(--sub); }
-  .bar-val { font-size: 9px; color: var(--accent); font-weight: 600; }
-
-  ::-webkit-scrollbar { width: 4px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+/* ── GROWTH TABLE ── */
+.growth-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 0;border-bottom:1px solid rgba(30,45,66,0.5);
+}
+.growth-year{font-family:'DM Mono',monospace;font-size:12px;color:var(--text);}
+.growth-bar-wrap{flex:1;margin:0 14px;height:6px;background:var(--card2);border-radius:3px;overflow:hidden;}
+.growth-bar-fill{height:100%;border-radius:3px;background:var(--mint);transition:width 0.6s ease;}
+.growth-pct{font-family:'DM Mono',monospace;font-size:11px;color:var(--mint);width:50px;text-align:right;}
 </style>
 </head>
 <body id="body">
 
+<!-- ══════════════════════════════════════
+     SIDEBAR
+══════════════════════════════════════ -->
 <aside class="sidebar">
-  <div class="logo">
-    <div class="logo-name">PayFlow</div>
+  <div class="logo-wrap">
+    <div class="logo-mark">
+      <div class="logo-icon">PF</div>
+      <span class="logo-name">PayFlow</span>
+    </div>
     <div class="logo-sub">Digital Payments Intelligence</div>
   </div>
 
-  <div class="nav-section">
+  <div class="nav-group">
     <div class="nav-label">Analytics</div>
-    <div class="nav-item active"><span class="icon">📊</span> Overview</div>
-    <div class="nav-item"><span class="icon">📈</span> Trend Analysis</div>
-    <div class="nav-item"><span class="icon">🗓️</span> Yearly View</div>
-    <div class="nav-item"><span class="icon">🏦</span> Bank Insights</div>
+    <div class="nav-item active" data-page="overview">
+      <div class="nav-dot"></div> Overview
+    </div>
+    <div class="nav-item" data-page="growth">
+      <div class="nav-dot"></div> UPI Growth (2016–2024)
+    </div>
+    <div class="nav-item" data-page="ecosystem">
+      <div class="nav-dot"></div> Payment Ecosystem
+    </div>
   </div>
 
-  <div class="nav-section">
-    <div class="nav-label">Pipeline</div>
-    <div class="nav-item"><span class="icon">⚙️</span> Pipeline Status</div>
-    <div class="nav-item"><span class="icon">🪵</span> Data Layers</div>
-    <div class="nav-item"><span class="icon">📋</span> Logs</div>
-  </div>
-
-  <div class="nav-section">
-    <div class="nav-label">Settings</div>
-    <div class="nav-item"><span class="icon">🔔</span> Alerts</div>
-    <div class="nav-item"><span class="icon">⚙️</span> Settings</div>
+  <div class="nav-group">
+    <div class="nav-label">Engineering</div>
+    <div class="nav-item" data-page="pipeline">
+      <div class="nav-dot"></div> Pipeline Monitor
+    </div>
+    <div class="nav-item" data-page="stream">
+      <div class="nav-dot"></div> Live Stream
+    </div>
   </div>
 
   <div class="sidebar-footer">
-    <div class="pipeline-status">
-      <div><span class="status-dot"></span><span class="status-text">Pipeline Active</span></div>
-      <div class="status-time">Last run: Today, 06:00 AM</div>
-      <div class="status-time" style="color:var(--sub);margin-top:2px">96 records processed</div>
+    <div class="pipeline-pill">
+      <div class="pill-row">
+        <span class="pill-label">PIPELINE STATUS</span>
+        <div class="pulse-dot"></div>
+      </div>
+      <div class="pill-val" id="sb-records">92 records</div>
+      <div class="pill-sub">Last run: Today 06:00 IST</div>
+      <div class="pill-sub" style="margin-top:3px;color:var(--mint)">Bronze → Silver → Gold ✓</div>
     </div>
   </div>
 </aside>
 
+<!-- ══════════════════════════════════════
+     MAIN
+══════════════════════════════════════ -->
 <main class="main">
   <div class="topbar">
     <div class="topbar-left">
-      <div class="topbar-title">UPI Transaction Intelligence</div>
-      <div class="topbar-sub">India Digital Payments — Apr 2016 to Feb 2024</div>
+      <div class="page-title" id="topbar-title">Overview</div>
+      <div class="page-crumb" id="topbar-crumb">India Digital Payments · NPCI Data · Aug 2016 – Dec 2024</div>
     </div>
     <div class="topbar-right">
-      <div class="filter-chip">
-        📅 <select><option>All Years</option><option>FY2022-23</option><option>FY2023-24</option>
-        <option>FY2024-25</option></select>
+      <div class="chip">
+        <span>📅</span>
+        <select id="year-filter" onchange="applyFilter()">
+          <option value="all">All Years</option>
+          <option value="2024">2024</option>
+          <option value="2023">2023</option>
+          <option value="2022">2022</option>
+          <option value="2021">2021</option>
+          <option value="2020">2020</option>
+        </select>
       </div>
-      <div class="nav-item" id="theme-btn" style="cursor: pointer; margin-bottom: 0;">
-        <span id="toggle-icon">☀️</span> <span id="toggle-text">Light</span>
-      </div>
+      <div class="chip" id="theme-btn" onclick="toggleTheme()">◐ Toggle Theme</div>
     </div>
   </div>
 
   <div class="content">
-    
-    <div id="screen-overview" class="view-screen">
+
+    <!-- ══════════════ PAGE: OVERVIEW ══════════════ -->
+    <div id="page-overview" class="page active">
+
       <div class="kpi-grid">
         <div class="kpi-card">
-          <div class="kpi-glow"></div>
-          <div class="kpi-icon">💳</div>
-          <div class="kpi-label">Total Volume</div>
-          <div class="kpi-value">86,762 <span style="font-size:13px;color:var(--sub)">Mn</span></div>
-          <div class="kpi-change up">▲ 12.4% vs last year</div>
+          <div class="kpi-top">
+            <div class="kpi-label">Total Volume (2024)</div>
+            <div class="kpi-badge badge-up">+59.1% YoY</div>
+          </div>
+          <div class="kpi-val">1,72,252</div>
+          <div class="kpi-unit">Million Transactions</div>
+          <div class="kpi-sub">≈ 172 Billion in FY2023-24</div>
+          <div class="kpi-accent-bar mint-bar"></div>
         </div>
-        <div class="kpi-card c2">
-          <div class="kpi-glow" style="background:var(--accent2)"></div>
-          <div class="kpi-icon">₹</div>
-          <div class="kpi-label">Total Value</div>
-          <div class="kpi-value">139.2 <span style="font-size:13px;color:var(--sub)">Lakh Cr</span></div>
-          <div class="kpi-change up">▲ 18.7% vs last year</div>
+        <div class="kpi-card">
+          <div class="kpi-top">
+            <div class="kpi-label">Peak Month</div>
+            <div class="kpi-badge badge-up">Record High</div>
+          </div>
+          <div class="kpi-val">16,730</div>
+          <div class="kpi-unit">Mn · Dec 2024</div>
+          <div class="kpi-sub">539.68 Mn avg daily volume</div>
+          <div class="kpi-accent-bar amber-bar"></div>
         </div>
-        <div class="kpi-card c3">
-          <div class="kpi-glow" style="background:#F472B6"></div>
-          <div class="kpi-icon">🎯</div>
-          <div class="kpi-label">Avg Ticket Size</div>
-          <div class="kpi-value">₹1,604</div>
-          <div class="kpi-change down">▼ 3.2% vs last year</div>
+        <div class="kpi-card">
+          <div class="kpi-top">
+            <div class="kpi-label">Avg Monthly Growth</div>
+            <div class="kpi-badge badge-up">Consistent</div>
+          </div>
+          <div class="kpi-val">+3.2%</div>
+          <div class="kpi-unit">MoM (2024 avg)</div>
+          <div class="kpi-sub">From 12,203 → 16,730 Mn</div>
+          <div class="kpi-accent-bar blue-bar"></div>
         </div>
-        <div class="kpi-card c4">
-          <div class="kpi-glow" style="background:#22C55E"></div>
-          <div class="kpi-icon">🏦</div>
-          <div class="kpi-label">Active Banks</div>
-          <div class="kpi-value">574</div>
-          <div class="kpi-change up">▲ 8 new this year</div>
+        <div class="kpi-card">
+          <div class="kpi-top">
+            <div class="kpi-label">Payment Methods</div>
+            <div class="kpi-badge badge-up">All Active</div>
+          </div>
+          <div class="kpi-val">8</div>
+          <div class="kpi-unit">NPCI Products Tracked</div>
+          <div class="kpi-sub">UPI, IMPS, NACH, CTS, AePS, NETC, NFS</div>
+          <div class="kpi-accent-bar red-bar"></div>
         </div>
       </div>
 
-      <div class="charts-row">
+      <div class="charts-row cols-2-1">
         <div class="chart-card">
-          <div class="chart-title">Monthly Transaction Volume Trend</div>
-          <div class="chart-sub">Millions of transactions · 2016–2024</div>
-          <svg class="chart-svg" viewBox="0 0 600 180" height="180">
-            <defs>
-              <linearGradient id="lineGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#A855F7" stop-opacity="0.4"/>
-                <stop offset="100%" stop-color="#A855F7" stop-opacity="0"/>
-              </linearGradient>
-            </defs>
-            <polyline points="40,152 120,143 200,126 280,98 360,62 440,36 520,24 590,21" fill="none" stroke="#A855F7" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
-            <polygon points="40,152 120,143 200,126 280,98 360,62 440,36 520,24 590,21 590,155 40,155" fill="url(#lineGrad)"/>
-          </svg>
+          <div class="card-header">
+            <div>
+              <div class="card-title">UPI Transaction Volume — Full History</div>
+              <div class="card-sub">Monthly Millions · Aug 2016 to Dec 2024 · Source: NPCI</div>
+            </div>
+            <div class="card-tag">101 DATA POINTS</div>
+          </div>
+          <div class="chart-wrap-lg">
+            <canvas id="mainTrendChart"></canvas>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">FY Annual Volume</div>
+              <div class="card-sub">Billions of transactions per fiscal year</div>
+            </div>
+          </div>
+          <div class="chart-wrap-lg">
+            <canvas id="annualChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="charts-row cols-3">
+        <div class="chart-card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Peak Month Heatmap</div>
+              <div class="card-sub">Transaction intensity by month · 2024</div>
+            </div>
+          </div>
+          <div class="heat-grid" id="heatmap"></div>
+          <div class="heat-labels">
+            <div class="heat-lbl">Jan</div><div class="heat-lbl">Feb</div><div class="heat-lbl">Mar</div>
+            <div class="heat-lbl">Apr</div><div class="heat-lbl">May</div><div class="heat-lbl">Jun</div>
+            <div class="heat-lbl">Jul</div><div class="heat-lbl">Aug</div><div class="heat-lbl">Sep</div>
+            <div class="heat-lbl">Oct</div><div class="heat-lbl">Nov</div><div class="heat-lbl">Dec</div>
+          </div>
+          <div class="heat-legend">
+            Less <div class="heat-legend-cell h0"></div>
+            <div class="heat-legend-cell h1"></div><div class="heat-legend-cell h2"></div>
+            <div class="heat-legend-cell h3"></div><div class="heat-legend-cell h4"></div>
+            <div class="heat-legend-cell h5"></div> More
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Month-over-Month Growth</div>
+              <div class="card-sub">Volume % change · UPI 2024</div>
+            </div>
+          </div>
+          <div class="chart-wrap-sm" style="height:140px;">
+            <canvas id="momChart"></canvas>
+          </div>
+          <div style="margin-top:10px;">
+            <div id="mom-table"></div>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">YoY Growth Rate</div>
+              <div class="card-sub">Annual volume growth %</div>
+            </div>
+          </div>
+          <div id="growth-bars"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ PAGE: UPI GROWTH ══════════════ -->
+    <div id="page-growth" class="page">
+      <div class="section-title">UPI Growth Story · Aug 2016 – Dec 2024</div>
+
+      <div class="charts-row col-full">
+        <div class="chart-card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Complete UPI Transaction Volume Timeline</div>
+              <div class="card-sub">101 months of data · Millions of transactions · NPCI official figures</div>
+            </div>
+            <div class="card-tag">LOGARITHMIC SCALE</div>
+          </div>
+          <div style="position:relative;height:360px;">
+            <canvas id="fullTrendChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="charts-row cols-2">
+        <div class="chart-card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Year-over-Year Growth Rate</div>
+              <div class="card-sub">Annual % growth in transaction volume</div>
+            </div>
+          </div>
+          <div class="chart-wrap">
+            <canvas id="yoyChart"></canvas>
+          </div>
         </div>
         <div class="chart-card">
-          <div class="chart-title">Pipeline Status Summary</div>
-          <div class="chart-sub">Health of Data Layers</div>
-          <div style="margin-top:20px">
-            <div style="margin-bottom:10px">🟢 Bronze: Healthy</div>
-            <div style="margin-bottom:10px">🟢 Silver: Cleaned</div>
-            <div>🟡 Gold: Processing</div>
+          <div class="card-header">
+            <div>
+              <div class="card-title">Milestone Events</div>
+              <div class="card-sub">Key inflection points in UPI adoption</div>
+            </div>
+          </div>
+          <div style="padding:6px 0;">
+            <div class="growth-row">
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div style="width:8px;height:8px;border-radius:50%;background:var(--mint);flex-shrink:0;"></div>
+                <div class="growth-year">Aug 2016</div>
+              </div>
+              <div style="font-size:11px;color:var(--sub);flex:1;margin:0 12px;">UPI Launched by NPCI</div>
+              <div class="growth-pct">0.09 Mn</div>
+            </div>
+            <div class="growth-row">
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div style="width:8px;height:8px;border-radius:50%;background:var(--amber);flex-shrink:0;"></div>
+                <div class="growth-year">Nov 2016</div>
+              </div>
+              <div style="font-size:11px;color:var(--sub);flex:1;margin:0 12px;">Demonetization — temporary dip</div>
+              <div class="growth-pct" style="color:var(--red);">0.24 Mn</div>
+            </div>
+            <div class="growth-row">
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div style="width:8px;height:8px;border-radius:50%;background:var(--blue);flex-shrink:0;"></div>
+                <div class="growth-year">Oct 2019</div>
+              </div>
+              <div style="font-size:11px;color:var(--sub);flex:1;margin:0 12px;">Crossed 1 Billion/month first time</div>
+              <div class="growth-pct">1,000 Mn</div>
+            </div>
+            <div class="growth-row">
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div style="width:8px;height:8px;border-radius:50%;background:var(--red);flex-shrink:0;"></div>
+                <div class="growth-year">Apr 2020</div>
+              </div>
+              <div style="font-size:11px;color:var(--sub);flex:1;margin:0 12px;">COVID-19 lockdown dip</div>
+              <div class="growth-pct" style="color:var(--red);">999 Mn</div>
+            </div>
+            <div class="growth-row">
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div style="width:8px;height:8px;border-radius:50%;background:var(--mint);flex-shrink:0;"></div>
+                <div class="growth-year">Mar 2024</div>
+              </div>
+              <div style="font-size:11px;color:var(--sub);flex:1;margin:0 12px;">Record: 13,440 Mn in single month</div>
+              <div class="growth-pct">13,440 Mn</div>
+            </div>
+            <div class="growth-row" style="border:none;">
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div style="width:8px;height:8px;border-radius:50%;background:var(--mint);flex-shrink:0;box-shadow:0 0 6px var(--mint);"></div>
+                <div class="growth-year">Dec 2024</div>
+              </div>
+              <div style="font-size:11px;color:var(--sub);flex:1;margin:0 12px;">Latest: All-time high</div>
+              <div class="growth-pct">16,730 Mn</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="charts-row cols-2">
+        <div class="chart-card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Annual Totals (FY)</div>
+              <div class="card-sub">Fiscal year transaction volumes</div>
+            </div>
+          </div>
+          <table class="data-table">
+            <thead><tr><th>Fiscal Year</th><th>Total Volume</th><th>Growth</th><th>Avg Monthly</th></tr></thead>
+            <tbody id="fy-table"></tbody>
+          </table>
+        </div>
+        <div class="chart-card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">2024 Monthly Breakdown</div>
+              <div class="card-sub">All 12 months · NPCI official data</div>
+            </div>
+          </div>
+          <table class="data-table">
+            <thead><tr><th>Month</th><th>Volume (Mn)</th><th>Avg Daily</th><th>MoM Δ</th></tr></thead>
+            <tbody id="monthly-table-2024"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ PAGE: ECOSYSTEM ══════════════ -->
+    <div id="page-ecosystem" class="page">
+      <div class="section-title">Payment Ecosystem — All NPCI Products · 2024</div>
+
+      <div class="charts-row cols-2">
+        <div class="chart-card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Volume Comparison — All Payment Methods</div>
+              <div class="card-sub">Monthly Millions · 2024 · Source: NPCI</div>
+            </div>
+          </div>
+          <div class="chart-wrap-lg">
+            <canvas id="ecoLineChart"></canvas>
+          </div>
+        </div>
+        <div class="chart-card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Market Share by Volume</div>
+              <div class="card-sub">Total 2024 volume distribution</div>
+            </div>
+          </div>
+          <div class="chart-wrap-lg">
+            <canvas id="donutChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="charts-row cols-2">
+        <div class="chart-card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Stacked Volume — All Products</div>
+              <div class="card-sub">Monthly contribution by payment type</div>
+            </div>
+          </div>
+          <div class="chart-wrap">
+            <canvas id="stackedChart"></canvas>
+          </div>
+        </div>
+        <div class="chart-card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Product Summary Table</div>
+              <div class="card-sub">2024 totals · All NPCI payment systems</div>
+            </div>
+          </div>
+          <table class="data-table">
+            <thead><tr><th>Product</th><th>Total Vol (Mn)</th><th>Dec 2024</th><th>Trend</th></tr></thead>
+            <tbody id="eco-table"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ PAGE: PIPELINE ══════════════ -->
+    <div id="page-pipeline" class="page">
+      <div class="section-title">Medallion Architecture — Data Pipeline</div>
+
+      <div class="medallion-flow">
+        <div class="layer-block">
+          <div class="layer-icon">📥</div>
+          <div class="layer-name">Bronze Layer</div>
+          <div class="layer-desc">Raw Ingestion · dlt → DuckDB</div>
+          <div class="layer-desc" style="margin-top:3px;">stg_raw_upi</div>
+          <div class="layer-count">12 rows</div>
+          <div class="layer-status status-ok">● Active</div>
+        </div>
+        <div class="layer-arrow">→</div>
+        <div class="layer-block">
+          <div class="layer-icon">⚗️</div>
+          <div class="layer-name">Silver Layer</div>
+          <div class="layer-desc">Cleaned · Type-cast · Validated</div>
+          <div class="layer-desc" style="margin-top:3px;">cleaned_upi</div>
+          <div class="layer-count">12 rows</div>
+          <div class="layer-status status-ok">● Active</div>
+        </div>
+        <div class="layer-arrow">→</div>
+        <div class="layer-block">
+          <div class="layer-icon">🥇</div>
+          <div class="layer-name">Gold Layer</div>
+          <div class="layer-desc">Business Metrics · Aggregated</div>
+          <div class="layer-desc" style="margin-top:3px;">monthly_business_metrics</div>
+          <div class="layer-count">12 rows</div>
+          <div class="layer-status status-ok">● Active</div>
+        </div>
+        <div class="layer-arrow">→</div>
+        <div class="layer-block">
+          <div class="layer-icon">📊</div>
+          <div class="layer-name">Dashboard</div>
+          <div class="layer-desc">Chart.js · HTML · data.json</div>
+          <div class="layer-desc" style="margin-top:3px;">PayFlow UI</div>
+          <div class="layer-count">Live</div>
+          <div class="layer-status status-ok">● Serving</div>
+        </div>
+      </div>
+
+      <div class="charts-row cols-2" style="margin-top:20px;">
+        <div class="chart-card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Tech Stack</div>
+              <div class="card-sub">All tools used in PayFlow pipeline</div>
+            </div>
+          </div>
+          <div class="tool-grid">
+            <div class="tool-card">
+              <div class="tool-icon">🔄</div>
+              <div><div class="tool-name">dlt</div><div class="tool-role">Ingestion</div></div>
+              <div class="tool-badge tb-live">LIVE</div>
+            </div>
+            <div class="tool-card">
+              <div class="tool-icon">🦆</div>
+              <div><div class="tool-name">DuckDB</div><div class="tool-role">Warehouse</div></div>
+              <div class="tool-badge tb-live">LIVE</div>
+            </div>
+            <div class="tool-card">
+              <div class="tool-icon">🪣</div>
+              <div><div class="tool-name">MinIO</div><div class="tool-role">Object Store</div></div>
+              <div class="tool-badge tb-docker">DOCKER</div>
+            </div>
+            <div class="tool-card">
+              <div class="tool-icon">🔴</div>
+              <div><div class="tool-name">Redpanda</div><div class="tool-role">Streaming</div></div>
+              <div class="tool-badge tb-docker">DOCKER</div>
+            </div>
+            <div class="tool-card">
+              <div class="tool-icon">🌊</div>
+              <div><div class="tool-name">Kestra</div><div class="tool-role">Orchestration</div></div>
+              <div class="tool-badge tb-docker">DOCKER</div>
+            </div>
+            <div class="tool-card">
+              <div class="tool-icon">🏗️</div>
+              <div><div class="tool-name">Terraform</div><div class="tool-role">IaC</div></div>
+              <div class="tool-badge tb-config">CONFIG</div>
+            </div>
+            <div class="tool-card">
+              <div class="tool-icon">🐍</div>
+              <div><div class="tool-name">Python</div><div class="tool-role">Transforms</div></div>
+              <div class="tool-badge tb-live">LIVE</div>
+            </div>
+            <div class="tool-card">
+              <div class="tool-icon">🐙</div>
+              <div><div class="tool-name">GitHub</div><div class="tool-role">Version Control</div></div>
+              <div class="tool-badge tb-live">LIVE</div>
+            </div>
+            <div class="tool-card">
+              <div class="tool-icon">📊</div>
+              <div><div class="tool-name">Chart.js</div><div class="tool-role">Dashboard</div></div>
+              <div class="tool-badge tb-live">LIVE</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Kestra Workflow DAG</div>
+              <div class="card-sub">Orchestration schedule · Runs daily 06:00 IST</div>
+            </div>
+          </div>
+          <div style="padding:8px 0;">
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--card2);border-radius:7px;border:1px solid var(--border);">
+                <div style="width:28px;height:28px;border-radius:6px;background:rgba(0,201,167,0.12);display:flex;align-items:center;justify-content:center;font-size:13px;">⏰</div>
+                <div><div style="font-size:11px;font-weight:600;">TRIGGER</div><div style="font-size:9px;color:var(--sub);">cron: 0 6 * * * (daily 6AM)</div></div>
+                <div class="tool-badge tb-live" style="margin-left:auto;">CRON</div>
+              </div>
+              <div style="text-align:center;color:var(--sub2);font-size:14px;">↓</div>
+              <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--card2);border-radius:7px;border:1px solid rgba(205,127,50,0.3);">
+                <div style="width:28px;height:28px;border-radius:6px;background:rgba(205,127,50,0.1);display:flex;align-items:center;justify-content:center;font-size:13px;">📥</div>
+                <div><div style="font-size:11px;font-weight:600;">ingest_bronze.py</div><div style="font-size:9px;color:var(--sub);">Fetch NPCI data · dlt → DuckDB Bronze</div></div>
+              </div>
+              <div style="text-align:center;color:var(--sub2);font-size:14px;">↓</div>
+              <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--card2);border-radius:7px;border:1px solid rgba(192,192,192,0.2);">
+                <div style="width:28px;height:28px;border-radius:6px;background:rgba(192,192,192,0.1);display:flex;align-items:center;justify-content:center;font-size:13px;">⚗️</div>
+                <div><div style="font-size:11px;font-weight:600;">process_silver.py</div><div style="font-size:9px;color:var(--sub);">Clean, validate, type-cast → Silver</div></div>
+              </div>
+              <div style="text-align:center;color:var(--sub2);font-size:14px;">↓</div>
+              <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--card2);border-radius:7px;border:1px solid rgba(255,215,0,0.2);">
+                <div style="width:28px;height:28px;border-radius:6px;background:rgba(255,215,0,0.08);display:flex;align-items:center;justify-content:center;font-size:13px;">🥇</div>
+                <div><div style="font-size:11px;font-weight:600;">process_gold.py</div><div style="font-size:9px;color:var(--sub);">Aggregate business metrics → Gold</div></div>
+              </div>
+              <div style="text-align:center;color:var(--sub2);font-size:14px;">↓</div>
+              <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--card2);border-radius:7px;border:1px solid rgba(0,201,167,0.2);">
+                <div style="width:28px;height:28px;border-radius:6px;background:rgba(0,201,167,0.1);display:flex;align-items:center;justify-content:center;font-size:13px;">📊</div>
+                <div><div style="font-size:11px;font-weight:600;">export_dashboard_data.py</div><div style="font-size:9px;color:var(--sub);">Push Gold → data.json → Dashboard UI</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="chart-card" style="margin-top:14px;">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Data Lineage</div>
+            <div class="card-sub">Source → Bronze → Silver → Gold → Dashboard</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:4px;padding:12px 0;overflow-x:auto;">
+          <div style="background:var(--card2);border:1px solid var(--border);border-radius:6px;padding:8px 14px;white-space:nowrap;">
+            <div style="font-size:9px;color:var(--sub);">SOURCE</div>
+            <div style="font-size:11px;font-weight:600;margin-top:2px;">NPCI CSV Files</div>
+            <div style="font-size:9px;color:var(--sub);margin-top:1px;">npci.org.in</div>
+          </div>
+          <div style="color:var(--mint);font-size:16px;padding:0 4px;">→</div>
+          <div style="background:rgba(205,127,50,0.08);border:1px solid rgba(205,127,50,0.2);border-radius:6px;padding:8px 14px;white-space:nowrap;">
+            <div style="font-size:9px;color:#CD7F32;">BRONZE</div>
+            <div style="font-size:11px;font-weight:600;margin-top:2px;">stg_raw_upi</div>
+            <div style="font-size:9px;color:var(--sub);margin-top:1px;">raw_upi_data schema</div>
+          </div>
+          <div style="color:var(--mint);font-size:16px;padding:0 4px;">→</div>
+          <div style="background:rgba(192,192,192,0.05);border:1px solid rgba(192,192,192,0.2);border-radius:6px;padding:8px 14px;white-space:nowrap;">
+            <div style="font-size:9px;color:#C0C0C0;">SILVER</div>
+            <div style="font-size:11px;font-weight:600;margin-top:2px;">cleaned_upi</div>
+            <div style="font-size:9px;color:var(--sub);margin-top:1px;">silver_layer schema</div>
+          </div>
+          <div style="color:var(--mint);font-size:16px;padding:0 4px;">→</div>
+          <div style="background:rgba(255,215,0,0.06);border:1px solid rgba(255,215,0,0.2);border-radius:6px;padding:8px 14px;white-space:nowrap;">
+            <div style="font-size:9px;color:#FFD700;">GOLD</div>
+            <div style="font-size:11px;font-weight:600;margin-top:2px;">monthly_business_metrics</div>
+            <div style="font-size:9px;color:var(--sub);margin-top:1px;">gold_layer schema</div>
+          </div>
+          <div style="color:var(--mint);font-size:16px;padding:0 4px;">→</div>
+          <div style="background:var(--mint-dim);border:1px solid rgba(0,201,167,0.2);border-radius:6px;padding:8px 14px;white-space:nowrap;">
+            <div style="font-size:9px;color:var(--mint);">SERVE</div>
+            <div style="font-size:11px;font-weight:600;margin-top:2px;">data.json</div>
+            <div style="font-size:9px;color:var(--sub);margin-top:1px;">Chart.js Dashboard</div>
           </div>
         </div>
       </div>
     </div>
 
-    <div id="screen-lineage" class="view-screen" style="display:none;">
-      <div class="chart-card">
-        <div class="chart-title">System Data Lineage</div>
-        <div class="chart-sub">Traceability map from Source to Gold Layer</div>
-        <div style="display: flex; flex-direction: column; gap: 20px; padding: 20px;">
-          <div class="kpi-card" style="border-left: 5px solid #CD7F32;">
-            <strong>Bronze Layer</strong><br/>
-            <small>Raw Ingestion via dlt ➔ stg_raw_upi</small>
+    <!-- ══════════════ PAGE: LIVE STREAM ══════════════ -->
+    <div id="page-stream" class="page">
+      <div class="section-title">Redpanda / Kafka — Live Transaction Stream</div>
+
+      <div class="stream-stats">
+        <div class="stat-pill"><div class="stat-val" id="stat-total">0</div><div class="stat-lbl">Events Processed</div></div>
+        <div class="stat-pill"><div class="stat-val" id="stat-ok" style="color:var(--mint)">0</div><div class="stat-lbl">Success</div></div>
+        <div class="stat-pill"><div class="stat-val" id="stat-fail" style="color:var(--red)">0</div><div class="stat-lbl">Failed</div></div>
+        <div class="stat-pill"><div class="stat-val" id="stat-tps">0</div><div class="stat-lbl">Events/sec</div></div>
+      </div>
+
+      <div class="charts-row cols-2">
+        <div class="chart-card">
+          <div class="stream-header">
+            <div class="stream-title">▶ payflow.transactions.live @ localhost:9092</div>
+            <div class="stream-controls">
+              <div class="ctrl-btn active-ctrl" id="btn-start" onclick="startStream()">START</div>
+              <div class="ctrl-btn" id="btn-stop" onclick="stopStream()">STOP</div>
+              <div class="ctrl-btn" onclick="clearStream()">CLEAR</div>
+            </div>
           </div>
-          <div style="text-align: center; color: var(--accent);">⬇</div>
-          <div class="kpi-card" style="border-left: 5px solid #C0C0C0;">
-            <strong>Silver Layer</strong><br/>
-            <small>Cleaning & Type Casting ➔ cleaned_upi</small>
+          <div class="stream-terminal" id="stream-log"></div>
+        </div>
+
+        <div class="chart-card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Event Rate</div>
+              <div class="card-sub">Real-time transaction throughput</div>
+            </div>
           </div>
-          <div style="text-align: center; color: var(--accent);">⬇</div>
-          <div class="kpi-card" style="border-left: 5px solid #FFD700;">
-            <strong>Gold Layer</strong><br/>
-            <small>Business Metrics Aggregation ➔ monthly_business_metrics</small>
+          <div class="chart-wrap">
+            <canvas id="streamChart"></canvas>
+          </div>
+          <div style="margin-top:14px;">
+            <div class="card-title" style="margin-bottom:10px;">Method Distribution</div>
+            <div id="method-bars"></div>
           </div>
         </div>
       </div>
     </div>
 
-    <div id="screen-logs" class="view-screen" style="display:none;">
-      <div class="chart-card">
-        <div class="chart-title">Pipeline Execution Logs</div>
-        <table class="mom-table">
-          <thead><tr><th>Timestamp</th><th>Module</th><th>Status</th></tr></thead>
-          <tbody>
-            <tr><td>2026-04-18 11:10</td><td>process_gold.py</td><td><span style="color:#22C55E">SUCCESS</span></td></tr>
-            <tr><td>2026-04-18 10:52</td><td>process_silver.py</td><td><span style="color:#22C55E">SUCCESS</span></td></tr>
-            <tr><td>2026-04-18 10:30</td><td>ingest_bronze.py</td><td><span style="color:#22C55E">SUCCESS</span></td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-  </div>
+  </div><!-- /content -->
 </main>
 
 <script>
-  function toggleTheme() {
-    document.body.classList.toggle('light');
-    const isLight = document.body.classList.contains('light');
-    document.getElementById('toggle-icon').textContent = isLight ? '🌙' : '☀️';
-    document.getElementById('toggle-text').textContent = isLight ? 'Dark' : 'Light';
+// ═══════════════════════════════════════
+//  DATA
+// ═══════════════════════════════════════
+const UPI_HISTORY = {
+  labels: [
+    "Aug-16","Sep-16","Oct-16","Nov-16","Dec-16",
+    "Jan-17","Feb-17","Mar-17","Apr-17","May-17","Jun-17","Jul-17","Aug-17","Sep-17","Oct-17","Nov-17","Dec-17",
+    "Jan-18","Feb-18","Mar-18","Apr-18","May-18","Jun-18","Jul-18","Aug-18","Sep-18","Oct-18","Nov-18","Dec-18",
+    "Jan-19","Feb-19","Mar-19","Apr-19","May-19","Jun-19","Jul-19","Aug-19","Sep-19","Oct-19","Nov-19","Dec-19",
+    "Jan-20","Feb-20","Mar-20","Apr-20","May-20","Jun-20","Jul-20","Aug-20","Sep-20","Oct-20","Nov-20","Dec-20",
+    "Jan-21","Feb-21","Mar-21","Apr-21","May-21","Jun-21","Jul-21","Aug-21","Sep-21","Oct-21","Nov-21","Dec-21",
+    "Jan-22","Feb-22","Mar-22","Apr-22","May-22","Jun-22","Jul-22","Aug-22","Sep-22","Oct-22","Nov-22","Dec-22",
+    "Jan-23","Feb-23","Mar-23","Apr-23","May-23","Jun-23","Jul-23","Aug-23","Sep-23","Oct-23","Nov-23","Dec-23",
+    "Jan-24","Feb-24","Mar-24","Apr-24","May-24","Jun-24","Jul-24","Aug-24","Sep-24","Oct-24","Nov-24","Dec-24"
+  ],
+  volumes: [
+    0.09,0.28,0.44,0.24,1.61,
+    1.97,2.02,6.25,7.31,9.30,10.35,11.36,14.18,17.37,19.91,24.91,28.52,
+    35.18,52.37,71.24,90,110,135,165,195,230,270,315,350,
+    390,430,480,540,600,670,760,850,935,1000,1080,1150,
+    1230,1240,1254,999,1215,1340,1491,1612,1800,2070,2310,2233,
+    2304,2294,2732,2735,2537,2801,3231,3553,4167,4214,4180,4619,
+    4619,3527,5356,5579,5916,5478,6284,6573,6779,7305,7095,7827,
+    8035,7527,8573,8894,9414,9338,10583,10585,10561,11414,11235,12023,
+    12203,12103,13440,13304,14036,13885,14436,14963,15042,16585,15482,16730
+  ]
+};
+
+const ECO_DATA = {
+  months: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
+  products: {
+    "UPI":       [12203,12103,13440,13304,14036,13885,14436,14963,15042,16585,15482,16730],
+    "IMPS":      [508.79,534.64,580.64,550.37,557.70,516.75,490.28,453.34,429.94,466.82,407.92,441.16],
+    "NETC":      [331.38,323.43,338.73,328.10,347.36,334.41,322.74,328.99,318.40,344.96,358.85,381.98],
+    "NFS":       [313.73,304.52,328.77,312.76,307.71,302.55,298.74,304.34,292.89,329.11,280.81,291.67],
+    "NACH-APBS": [211.87,296.58,301.45,253.53,229.55,292.93,248.14,278.33,234.24,402.19,225.10,245.14],
+    "CTS":       [54.72,54.19,58.53,52.57,52.44,48.44,53.10,50.85,48.49,54.70,47.25,50.66],
+    "AePS-CW":   [83.97,81.22,105.96,91.91,87.98,97.38,94.43,97.30,97.51,122.73,89.83,91.09]
   }
-  document.getElementById('theme-btn').onclick = toggleTheme;
+};
 
-  const navItems = document.querySelectorAll('.nav-item');
-  const screens = document.querySelectorAll('.view-screen');
+const FY_DATA = [
+  {fy:"FY16-17",total:0.18,growth:null,avg:0.015},
+  {fy:"FY17-18",total:1.92,growth:967,avg:0.16},
+  {fy:"FY18-19",total:5.35,growth:179,avg:0.45},
+  {fy:"FY19-20",total:12.52,growth:134,avg:1.04},
+  {fy:"FY20-21",total:22.33,growth:78,avg:1.86},
+  {fy:"FY21-22",total:45.96,growth:106,avg:3.83},
+  {fy:"FY22-23",total:83.75,growth:82,avg:6.98},
+  {fy:"FY23-24",total:131.17,growth:57,avg:10.93},
+];
 
-  navItems.forEach(item => {
-    if (item.id === 'theme-btn') return;
-    item.onclick = function() {
-      navItems.forEach(nav => nav.classList.remove('active'));
-      this.classList.add('active');
-      screens.forEach(s => s.style.display = 'none');
+const UPI_2024 = {
+  months:["Jan-24","Feb-24","Mar-24","Apr-24","May-24","Jun-24","Jul-24","Aug-24","Sep-24","Oct-24","Nov-24","Dec-24"],
+  volume:[12203.02,12102.67,13440.00,13303.99,14035.84,13885.14,14435.55,14963.05,15041.75,16584.97,15482.02,16730.01],
+  avgDaily:[393.65,417.33,433.55,443.47,452.77,462.84,465.66,482.68,501.39,535.00,516.07,539.68]
+};
 
-      const text = this.textContent.toLowerCase();
-      if (text.includes('overview')) {
-        document.getElementById('screen-overview').style.display = 'block';
-      } else if (text.includes('data layers')) {
-        document.getElementById('screen-lineage').style.display = 'block';
-      } else if (text.includes('logs')) {
-        document.getElementById('screen-logs').style.display = 'block';
+// ═══════════════════════════════════════
+//  CHART CONFIG HELPERS
+// ═══════════════════════════════════════
+Chart.defaults.color = '#5A7394';
+Chart.defaults.borderColor = '#1E2D42';
+Chart.defaults.font.family = "'Outfit', sans-serif";
+
+const MINT = '#00C9A7';
+const AMBER = '#F5A623';
+const RED = '#FF5670';
+const BLUE = '#4E9EFF';
+const PURPLE = '#9B8DFF';
+
+function gradientMint(ctx, area){
+  const g = ctx.createLinearGradient(0, area.top, 0, area.bottom);
+  g.addColorStop(0,'rgba(0,201,167,0.3)');
+  g.addColorStop(1,'rgba(0,201,167,0)');
+  return g;
+}
+
+// ═══════════════════════════════════════
+//  CHARTS INIT
+// ═══════════════════════════════════════
+let charts = {};
+
+function initOverviewCharts(){
+  // Main trend
+  const ctx1 = document.getElementById('mainTrendChart').getContext('2d');
+  charts.mainTrend = new Chart(ctx1,{
+    type:'line',
+    data:{
+      labels:UPI_HISTORY.labels,
+      datasets:[{
+        label:'Volume (Mn)',
+        data:UPI_HISTORY.volumes,
+        borderColor:MINT,borderWidth:2,
+        pointRadius:0,pointHoverRadius:4,
+        backgroundColor:(ctx)=>gradientMint(ctx.chart.ctx,ctx.chart.chartArea||{top:0,bottom:300}),
+        fill:true,tension:0.4
+      }]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          backgroundColor:'#141D2B',borderColor:'#1E2D42',borderWidth:1,
+          titleColor:'#E2EAF4',bodyColor:'#5A7394',
+          callbacks:{label:ctx=>`  Volume: ${ctx.parsed.y.toLocaleString()} Mn`}
+        },
+        annotation:{annotations:{
+          covid:{type:'line',xMin:'Apr-20',xMax:'Apr-20',borderColor:'rgba(255,86,112,0.5)',borderWidth:1,borderDash:[4,4],
+            label:{display:true,content:'COVID',color:RED,font:{size:9},position:'start'}},
+          demonet:{type:'line',xMin:'Nov-16',xMax:'Nov-16',borderColor:'rgba(245,166,35,0.4)',borderWidth:1,borderDash:[4,4],
+            label:{display:true,content:'Demonetisation',color:AMBER,font:{size:9},position:'start'}}
+        }}
+      },
+      scales:{
+        x:{grid:{display:false},ticks:{maxTicksLimit:12,maxRotation:0}},
+        y:{grid:{color:'rgba(30,45,66,0.6)'},ticks:{callback:v=>v>=1000?`${(v/1000).toFixed(0)}K`:v}}
       }
-    };
+    }
   });
+
+  // Annual bar
+  const ctx2 = document.getElementById('annualChart').getContext('2d');
+  charts.annual = new Chart(ctx2,{
+    type:'bar',
+    data:{
+      labels:FY_DATA.map(d=>d.fy),
+      datasets:[{
+        label:'Total (Bn)',
+        data:FY_DATA.map(d=>d.total),
+        backgroundColor:FY_DATA.map((d,i)=>i===FY_DATA.length-1?MINT:'rgba(0,201,167,0.3)'),
+        borderColor:FY_DATA.map((d,i)=>i===FY_DATA.length-1?MINT:'rgba(0,201,167,0.4)'),
+        borderWidth:1,borderRadius:4
+      }]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{backgroundColor:'#141D2B',borderColor:'#1E2D42',borderWidth:1}},
+      scales:{
+        x:{grid:{display:false}},
+        y:{grid:{color:'rgba(30,45,66,0.6)'},ticks:{callback:v=>`${v}Bn`}}
+      }
+    }
+  });
+
+  // MoM chart
+  const momData = UPI_2024.volume.map((v,i)=>i===0?0:((v-UPI_2024.volume[i-1])/UPI_2024.volume[i-1]*100).toFixed(1));
+  const ctx3 = document.getElementById('momChart').getContext('2d');
+  charts.mom = new Chart(ctx3,{
+    type:'bar',
+    data:{
+      labels:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+      datasets:[{
+        data:momData,
+        backgroundColor:momData.map(v=>parseFloat(v)>=0?'rgba(0,201,167,0.5)':'rgba(255,86,112,0.5)'),
+        borderColor:momData.map(v=>parseFloat(v)>=0?MINT:RED),
+        borderWidth:1,borderRadius:3
+      }]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{
+        x:{grid:{display:false},ticks:{font:{size:9}}},
+        y:{grid:{color:'rgba(30,45,66,0.6)'},ticks:{callback:v=>`${v}%`,font:{size:9}}}
+      }
+    }
+  });
+
+  // Heatmap
+  const hm = document.getElementById('heatmap');
+  const minV = Math.min(...UPI_2024.volume), maxV = Math.max(...UPI_2024.volume);
+  UPI_2024.volume.forEach((v,i)=>{
+    const pct = (v-minV)/(maxV-minV);
+    const lvl = pct<0.2?'h1':pct<0.4?'h2':pct<0.6?'h3':pct<0.8?'h4':'h5';
+    const cell = document.createElement('div');
+    cell.className = `heat-cell ${lvl}`;
+    cell.title = `${UPI_2024.months[i]}: ${v.toLocaleString()} Mn`;
+    hm.appendChild(cell);
+  });
+
+  // MoM table
+  let tableHTML = '';
+  UPI_2024.volume.forEach((v,i)=>{
+    if(i===0) return;
+    const chg = ((v-UPI_2024.volume[i-1])/UPI_2024.volume[i-1]*100).toFixed(1);
+    const cls = parseFloat(chg)>=0?'tbl-up':'tbl-down';
+    const arrow = parseFloat(chg)>=0?'▲':'▼';
+    tableHTML += `<div class="growth-row" style="${i===11?'border:none':''}">
+      <div style="font-size:11px;color:var(--text);width:55px;">${UPI_2024.months[i].replace('-24','')}</div>
+      <div class="tbl-num" style="font-size:11px;">${v.toLocaleString()}</div>
+      <div class="${cls}" style="font-size:11px;width:55px;text-align:right;">${arrow} ${Math.abs(chg)}%</div>
+    </div>`;
+  });
+  document.getElementById('mom-table').innerHTML = tableHTML;
+
+  // Growth bars
+  let gbHTML = '';
+  FY_DATA.forEach(d=>{
+    if(!d.growth) return;
+    const w = Math.min(d.growth/10, 100);
+    gbHTML += `<div class="growth-row" style="${d.fy==='FY23-24'?'border:none':''}">
+      <div class="growth-year" style="width:65px;">${d.fy}</div>
+      <div class="growth-bar-wrap"><div class="growth-bar-fill" style="width:${w}%"></div></div>
+      <div class="growth-pct">+${d.growth}%</div>
+    </div>`;
+  });
+  document.getElementById('growth-bars').innerHTML = gbHTML;
+}
+
+function initGrowthCharts(){
+  // Full trend (log scale)
+  const ctx = document.getElementById('fullTrendChart').getContext('2d');
+  charts.fullTrend = new Chart(ctx,{
+    type:'line',
+    data:{
+      labels:UPI_HISTORY.labels,
+      datasets:[{
+        label:'Volume (Mn)',
+        data:UPI_HISTORY.volumes,
+        borderColor:MINT,borderWidth:2,
+        pointRadius:UPI_HISTORY.volumes.map((v,i)=>[4,10,38,55,99].includes(i)?4:0),
+        pointBackgroundColor:MINT,
+        backgroundColor:(ctx)=>gradientMint(ctx.chart.ctx,ctx.chart.chartArea||{top:0,bottom:400}),
+        fill:true,tension:0.3
+      }]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{backgroundColor:'#141D2B',borderColor:'#1E2D42',borderWidth:1}},
+      scales:{
+        x:{grid:{display:false},ticks:{maxTicksLimit:15,maxRotation:45,font:{size:9}}},
+        y:{type:'logarithmic',grid:{color:'rgba(30,45,66,0.6)'},
+           ticks:{callback:v=>{if([0.1,1,10,100,1000,10000].includes(v))return v>=1000?`${(v/1000).toFixed(0)}K`:v;return '';}}}
+      }
+    }
+  });
+
+  // YoY chart
+  const ctx2 = document.getElementById('yoyChart').getContext('2d');
+  charts.yoy = new Chart(ctx2,{
+    type:'bar',
+    data:{
+      labels:FY_DATA.filter(d=>d.growth).map(d=>d.fy),
+      datasets:[{
+        label:'YoY Growth %',
+        data:FY_DATA.filter(d=>d.growth).map(d=>d.growth),
+        backgroundColor:FY_DATA.filter(d=>d.growth).map((d,i)=>i===FY_DATA.filter(x=>x.growth).length-1?MINT:'rgba(0,201,167,0.25)'),
+        borderColor:MINT,borderWidth:1,borderRadius:4
+      }]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{
+        x:{grid:{display:false}},
+        y:{grid:{color:'rgba(30,45,66,0.6)'},ticks:{callback:v=>`${v}%`}}
+      }
+    }
+  });
+
+  // FY table
+  let fyHTML = '';
+  FY_DATA.forEach(d=>{
+    fyHTML += `<tr>
+      <td>${d.fy}</td>
+      <td class="tbl-num">${d.total.toFixed(2)} Bn</td>
+      <td class="${d.growth?'tbl-up':''}">${d.growth?`▲ ${d.growth}%`:'—'}</td>
+      <td class="tbl-num">${d.avg.toFixed(2)} Bn</td>
+    </tr>`;
+  });
+  document.getElementById('fy-table').innerHTML = fyHTML;
+
+  // 2024 monthly table
+  let m24HTML = '';
+  UPI_2024.volume.forEach((v,i)=>{
+    const chg = i===0?'—':((v-UPI_2024.volume[i-1])/UPI_2024.volume[i-1]*100).toFixed(1);
+    const cls = i>0?(parseFloat(chg)>=0?'tbl-up':'tbl-down'):'';
+    const arrow = i>0?(parseFloat(chg)>=0?'▲ ':'▼ '):'';
+    m24HTML += `<tr>
+      <td>${UPI_2024.months[i]}</td>
+      <td class="tbl-num">${v.toLocaleString()}</td>
+      <td class="tbl-num">${UPI_2024.avgDaily[i]}</td>
+      <td class="${cls}">${arrow}${i>0?Math.abs(chg)+'%':'—'}</td>
+    </tr>`;
+  });
+  document.getElementById('monthly-table-2024').innerHTML = m24HTML;
+}
+
+function initEcoCharts(){
+  const colors = [MINT, AMBER, BLUE, PURPLE, '#FF9F40', RED, '#4BC0C0'];
+  const keys = Object.keys(ECO_DATA.products);
+
+  // Line chart (exclude UPI for scale)
+  const ctx1 = document.getElementById('ecoLineChart').getContext('2d');
+  charts.ecoLine = new Chart(ctx1,{
+    type:'line',
+    data:{
+      labels:ECO_DATA.months,
+      datasets:keys.map((k,i)=>({
+        label:k,
+        data:ECO_DATA.products[k],
+        borderColor:colors[i],borderWidth:k==='UPI'?2:1.5,
+        pointRadius:0,pointHoverRadius:3,
+        tension:0.3,
+        yAxisID:k==='UPI'?'y2':'y'
+      }))
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{
+        legend:{position:'top',labels:{boxWidth:10,font:{size:10}}},
+        tooltip:{backgroundColor:'#141D2B',borderColor:'#1E2D42',borderWidth:1}
+      },
+      scales:{
+        y:{position:'right',grid:{color:'rgba(30,45,66,0.6)'},ticks:{callback:v=>`${v}Mn`},title:{display:true,text:'Others (Mn)'}},
+        y2:{position:'left',grid:{display:false},ticks:{callback:v=>`${(v/1000).toFixed(0)}K`},title:{display:true,text:'UPI (Mn)'}}
+      }
+    }
+  });
+
+  // Donut
+  const totals = keys.map(k=>ECO_DATA.products[k].reduce((a,b)=>a+b,0));
+  const ctx2 = document.getElementById('donutChart').getContext('2d');
+  charts.donut = new Chart(ctx2,{
+    type:'doughnut',
+    data:{labels:keys,datasets:[{data:totals,backgroundColor:colors,borderColor:'#141D2B',borderWidth:2}]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{
+        legend:{position:'right',labels:{boxWidth:10,font:{size:10}}},
+        tooltip:{backgroundColor:'#141D2B',borderColor:'#1E2D42',borderWidth:1,
+          callbacks:{label:ctx=>`${ctx.label}: ${ctx.parsed.toLocaleString()} Mn`}}
+      }
+    }
+  });
+
+  // Stacked
+  const ctx3 = document.getElementById('stackedChart').getContext('2d');
+  charts.stacked = new Chart(ctx3,{
+    type:'bar',
+    data:{
+      labels:ECO_DATA.months,
+      datasets:keys.filter(k=>k!=='UPI').map((k,i)=>({
+        label:k,
+        data:ECO_DATA.products[k],
+        backgroundColor:colors[i+1],
+        borderColor:'transparent',borderWidth:0
+      }))
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{
+        legend:{position:'top',labels:{boxWidth:10,font:{size:10}}},
+        tooltip:{mode:'index',backgroundColor:'#141D2B',borderColor:'#1E2D42',borderWidth:1}
+      },
+      scales:{
+        x:{stacked:true,grid:{display:false}},
+        y:{stacked:true,grid:{color:'rgba(30,45,66,0.6)'},ticks:{callback:v=>`${v}Mn`}}
+      }
+    }
+  });
+
+  // Eco table
+  let ecoHTML = '';
+  keys.forEach((k,i)=>{
+    const tot = ECO_DATA.products[k].reduce((a,b)=>a+b,0);
+    const last = ECO_DATA.products[k][11];
+    const prev = ECO_DATA.products[k][10];
+    const trend = ((last-prev)/prev*100).toFixed(1);
+    const cls = parseFloat(trend)>=0?'tbl-up':'tbl-down';
+    ecoHTML += `<tr>
+      <td><span style="color:${colors[i]}">●</span> ${k}</td>
+      <td class="tbl-num">${tot.toLocaleString('en-IN',{maximumFractionDigits:0})}</td>
+      <td class="tbl-num">${last.toLocaleString()}</td>
+      <td class="${cls}">${parseFloat(trend)>=0?'▲':'▼'} ${Math.abs(trend)}%</td>
+    </tr>`;
+  });
+  document.getElementById('eco-table').innerHTML = ecoHTML;
+}
+
+// ═══════════════════════════════════════
+//  STREAM / KAFKA SIMULATION
+// ═══════════════════════════════════════
+let streamInterval = null, streamCount = 0, streamOk = 0, streamFail = 0;
+const streamRates = [];
+const METHODS = ['UPI','IMPS','NEFT','RTGS','NACH','CTS'];
+const BANKS = ['SBI','HDFC','ICICI','Axis','Kotak','PNB','BOB','Canara'];
+const methodCounts = {};METHODS.forEach(m=>methodCounts[m]=0);
+
+function startStream(){
+  if(streamInterval) return;
+  const log = document.getElementById('stream-log');
+
+  // Init stream chart
+  if(!charts.streamChart){
+    const ctx = document.getElementById('streamChart').getContext('2d');
+    charts.streamChart = new Chart(ctx,{
+      type:'line',
+      data:{labels:[],datasets:[{label:'Events/s',data:[],borderColor:MINT,borderWidth:2,pointRadius:0,fill:true,backgroundColor:'rgba(0,201,167,0.08)',tension:0.4}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+        scales:{x:{display:false},y:{grid:{color:'rgba(30,45,66,0.6)'},ticks:{font:{size:10}}}}}
+    });
+  }
+
+  streamInterval = setInterval(()=>{
+    const method = METHODS[Math.floor(Math.random()*METHODS.length)];
+    const bank = BANKS[Math.floor(Math.random()*BANKS.length)];
+    const amt = (Math.random()*49990+10).toFixed(2);
+    const status = Math.random()<0.85?'SUCCESS':Math.random()<0.5?'FAILED':'PENDING';
+    const part = Math.floor(Math.random()*3);
+    const ts = new Date().toTimeString().slice(0,8);
+    const txId = `TXN${Math.floor(Math.random()*9e5+1e5)}`;
+
+    streamCount++;
+    if(status==='SUCCESS') streamOk++;
+    else if(status==='FAILED') streamFail++;
+    methodCounts[method]=(methodCounts[method]||0)+1;
+
+    const cls = status==='SUCCESS'?'log-ok':status==='FAILED'?'log-fail':'log-pending';
+    const line = document.createElement('div');
+    line.className = 'log-line';
+    line.innerHTML = `<span class="log-ts">${ts}</span> <span class="log-topic">[payflow.txn]</span> <span class="log-part">P${part}</span> <span class="log-method">${method}</span> ${bank} ₹${parseFloat(amt).toLocaleString('en-IN')} <span class="${cls}">${status}</span> <span class="log-ts">#${txId}</span>`;
+    log.appendChild(line);
+    if(log.children.length>100) log.removeChild(log.firstChild);
+    log.scrollTop = log.scrollHeight;
+
+    document.getElementById('stat-total').textContent = streamCount;
+    document.getElementById('stat-ok').textContent = streamOk;
+    document.getElementById('stat-fail').textContent = streamFail;
+
+    streamRates.push(streamCount);
+    if(streamRates.length>30) streamRates.shift();
+    if(charts.streamChart){
+      charts.streamChart.data.labels = streamRates.map((_,i)=>i);
+      charts.streamChart.data.datasets[0].data = [...streamRates];
+      charts.streamChart.update('none');
+    }
+    document.getElementById('stat-tps').textContent = Math.floor(1000/400);
+
+    // Method bars
+    const maxM = Math.max(...Object.values(methodCounts));
+    let mbHTML = '';
+    METHODS.forEach(m=>{
+      const pct = maxM?(methodCounts[m]/maxM*100).toFixed(0):0;
+      mbHTML += `<div style="display:flex;align-items:center;gap:8px;margin-bottom:5px;">
+        <div style="font-size:9px;color:var(--sub);width:36px;font-family:'DM Mono',monospace;">${m}</div>
+        <div style="flex:1;height:5px;background:var(--card2);border-radius:3px;overflow:hidden;">
+          <div style="height:100%;width:${pct}%;background:${MINT};border-radius:3px;transition:width 0.3s;"></div>
+        </div>
+        <div style="font-size:9px;color:var(--mint);width:24px;text-align:right;font-family:'DM Mono',monospace;">${methodCounts[m]}</div>
+      </div>`;
+    });
+    document.getElementById('method-bars').innerHTML = mbHTML;
+  }, 400);
+}
+
+function stopStream(){clearInterval(streamInterval);streamInterval=null;}
+function clearStream(){
+  document.getElementById('stream-log').innerHTML='';
+  streamCount=0;streamOk=0;streamFail=0;
+  document.getElementById('stat-total').textContent='0';
+  document.getElementById('stat-ok').textContent='0';
+  document.getElementById('stat-fail').textContent='0';
+  METHODS.forEach(m=>methodCounts[m]=0);
+}
+
+// ═══════════════════════════════════════
+//  NAVIGATION
+// ═══════════════════════════════════════
+const PAGE_META = {
+  overview:  {title:'Overview',crumb:'India Digital Payments · NPCI Data · Aug 2016 – Dec 2024'},
+  growth:    {title:'UPI Growth (2016–2024)',crumb:'101 months of NPCI transaction data · logarithmic scale available'},
+  ecosystem: {title:'Payment Ecosystem',crumb:'All 8 NPCI products · Monthly 2024 · Volume comparison'},
+  pipeline:  {title:'Pipeline Monitor',crumb:'Medallion Architecture · Bronze → Silver → Gold · DuckDB · MinIO · Kestra'},
+  stream:    {title:'Live Stream',crumb:'Redpanda / Kafka · Topic: payflow.transactions.live · Partition 0–2'},
+};
+
+let chartsInitialized = {overview:false,growth:false,ecosystem:false};
+
+function navigateTo(page){
+  document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
+  document.querySelector(`[data-page="${page}"]`).classList.add('active');
+  document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
+  document.getElementById(`page-${page}`).classList.add('active');
+  document.getElementById('topbar-title').textContent = PAGE_META[page].title;
+  document.getElementById('topbar-crumb').textContent = PAGE_META[page].crumb;
+
+  if(page==='overview' && !chartsInitialized.overview){initOverviewCharts();chartsInitialized.overview=true;}
+  if(page==='growth' && !chartsInitialized.growth){initGrowthCharts();chartsInitialized.growth=true;}
+  if(page==='ecosystem' && !chartsInitialized.ecosystem){initEcoCharts();chartsInitialized.ecosystem=true;}
+  if(page==='stream'){startStream();}
+  else{stopStream();}
+}
+
+document.querySelectorAll('.nav-item').forEach(el=>{
+  el.addEventListener('click',()=>navigateTo(el.dataset.page));
+});
+
+function toggleTheme(){
+  document.body.classList.toggle('light');
+  const isLight = document.body.classList.contains('light');
+  document.getElementById('theme-btn').textContent = isLight?'◑ Dark Mode':'◐ Toggle Theme';
+}
+
+function applyFilter(){/* future: filter charts by year */}
+
+// Init first page
+window.addEventListener('DOMContentLoaded',()=>{
+  initOverviewCharts();
+  chartsInitialized.overview = true;
+});
 </script>
 </body>
+</html>
