@@ -346,7 +346,6 @@
 </aside>
 
 <main class="main">
-
   <div class="topbar">
     <div class="topbar-left">
       <div class="topbar-title">UPI Transaction Intelligence</div>
@@ -354,13 +353,8 @@
     </div>
     <div class="topbar-right">
       <div class="filter-chip">
-        📅 <select><option>All Years</option><option>FY2023-24</option><option>FY2022-23</option><option>FY2021-22</option></select>
-      </div>
-      <div class="filter-chip">
-        📆 <select><option>All Quarters</option><option>Q1</option><option>Q2</option><option>Q3</option><option>Q4</option></select>
-      </div>
-      <div class="filter-chip">
-        📁 <select><option>All Layers</option><option>Bronze</option><option>Silver</option><option>Gold</option></select>
+        📅 <select><option>All Years</option><option>FY2022-23</option><option>FY2023-24</option>
+        <option>FY2024-25</option></select>
       </div>
       <div class="nav-item" id="theme-btn" style="cursor: pointer; margin-bottom: 0;">
         <span id="toggle-icon">☀️</span> <span id="toggle-text">Light</span>
@@ -369,196 +363,134 @@
   </div>
 
   <div class="content">
-
-    <div class="kpi-grid">
-      <div class="kpi-card">
-        <div class="kpi-glow"></div>
-        <div class="kpi-icon">💳</div>
-        <div class="kpi-label">Total Volume</div>
-        <div class="kpi-value">86,762 <span style="font-size:13px;color:var(--sub)">Mn</span></div>
-        <div class="kpi-change up">▲ 12.4% vs last year</div>
-      </div>
-      <div class="kpi-card c2">
-        <div class="kpi-glow" style="background:var(--accent2)"></div>
-        <div class="kpi-icon">₹</div>
-        <div class="kpi-label">Total Value</div>
-        <div class="kpi-value">139.2 <span style="font-size:13px;color:var(--sub)">Lakh Cr</span></div>
-        <div class="kpi-change up">▲ 18.7% vs last year</div>
-      </div>
-      <div class="kpi-card c3">
-        <div class="kpi-glow" style="background:#F472B6"></div>
-        <div class="kpi-icon">🎯</div>
-        <div class="kpi-label">Avg Ticket Size</div>
-        <div class="kpi-value">₹1,604</div>
-        <div class="kpi-change down">▼ 3.2% vs last year</div>
-      </div>
-      <div class="kpi-card c4">
-        <div class="kpi-glow" style="background:#22C55E"></div>
-        <div class="kpi-icon">🏦</div>
-        <div class="kpi-label">Active Banks</div>
-        <div class="kpi-value">574</div>
-        <div class="kpi-change up">▲ 8 new this year</div>
-      </div>
-    </div>
-
-    <div class="charts-row">
-      <div class="chart-card">
-        <div class="chart-title">Monthly Transaction Volume Trend</div>
-        <div class="chart-sub">Millions of transactions · 2016–2024</div>
-        <svg class="chart-svg" viewBox="0 0 600 180" height="180">
-          <defs>
-            <linearGradient id="lineGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#A855F7" stop-opacity="0.4"/>
-              <stop offset="100%" stop-color="#A855F7" stop-opacity="0"/>
-            </linearGradient>
-          </defs>
-          <line x1="40" y1="20" x2="40" y2="155" stroke="rgba(168,85,247,0.1)" stroke-width="1"/>
-          <line x1="40" y1="155" x2="590" y2="155" stroke="rgba(168,85,247,0.1)" stroke-width="1"/>
-          <line x1="40" y1="60" x2="590" y2="60" stroke="rgba(168,85,247,0.06)" stroke-width="1" stroke-dasharray="4,4"/>
-          <line x1="40" y1="100" x2="590" y2="100" stroke="rgba(168,85,247,0.06)" stroke-width="1" stroke-dasharray="4,4"/>
-          <text x="35" y="24" text-anchor="end" font-size="9" fill="#8B7AA5">12K</text>
-          <text x="35" y="64" text-anchor="end" font-size="9" fill="#8B7AA5">8K</text>
-          <text x="35" y="104" text-anchor="end" font-size="9" fill="#8B7AA5">4K</text>
-          <text x="35" y="158" text-anchor="end" font-size="9" fill="#8B7AA5">0</text>
-          <polygon points="40,152 80,148 120,143 160,136 200,126 240,113 280,98 320,80 360,62 400,46 440,36 480,28 520,24 560,22 590,21 590,155 40,155" fill="url(#lineGrad)"/>
-          <polyline points="40,152 80,148 120,143 160,136 200,126 240,113 280,98 320,80 360,62 400,46 440,36 480,28 520,24 560,22 590,21" fill="none" stroke="#A855F7" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
-          <circle cx="590" cy="21" r="4" fill="#A855F7" stroke="#0F0A1E" stroke-width="2"/>
-          <circle cx="40" cy="152" r="3" fill="#A855F7" stroke="#0F0A1E" stroke-width="2"/>
-          <text x="40" y="170" text-anchor="middle" font-size="9" fill="#8B7AA5">2016</text>
-          <text x="120" y="170" text-anchor="middle" font-size="9" fill="#8B7AA5">2017</text>
-          <text x="200" y="170" text-anchor="middle" font-size="9" fill="#8B7AA5">2018</text>
-          <text x="290" y="170" text-anchor="middle" font-size="9" fill="#8B7AA5">2019</text>
-          <text x="380" y="170" text-anchor="middle" font-size="9" fill="#8B7AA5">2021</text>
-          <text x="470" y="170" text-anchor="middle" font-size="9" fill="#8B7AA5">2023</text>
-          <text x="590" y="170" text-anchor="middle" font-size="9" fill="#8B7AA5">2024</text>
-          <line x1="240" y1="25" x2="240" y2="155" stroke="rgba(244,114,182,0.3)" stroke-width="1" stroke-dasharray="3,3"/>
-          <text x="244" y="35" font-size="8" fill="#F472B6">COVID</text>
-        </svg>
+    
+    <div id="screen-overview" class="view-screen">
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-glow"></div>
+          <div class="kpi-icon">💳</div>
+          <div class="kpi-label">Total Volume</div>
+          <div class="kpi-value">86,762 <span style="font-size:13px;color:var(--sub)">Mn</span></div>
+          <div class="kpi-change up">▲ 12.4% vs last year</div>
+        </div>
+        <div class="kpi-card c2">
+          <div class="kpi-glow" style="background:var(--accent2)"></div>
+          <div class="kpi-icon">₹</div>
+          <div class="kpi-label">Total Value</div>
+          <div class="kpi-value">139.2 <span style="font-size:13px;color:var(--sub)">Lakh Cr</span></div>
+          <div class="kpi-change up">▲ 18.7% vs last year</div>
+        </div>
+        <div class="kpi-card c3">
+          <div class="kpi-glow" style="background:#F472B6"></div>
+          <div class="kpi-icon">🎯</div>
+          <div class="kpi-label">Avg Ticket Size</div>
+          <div class="kpi-value">₹1,604</div>
+          <div class="kpi-change down">▼ 3.2% vs last year</div>
+        </div>
+        <div class="kpi-card c4">
+          <div class="kpi-glow" style="background:#22C55E"></div>
+          <div class="kpi-icon">🏦</div>
+          <div class="kpi-label">Active Banks</div>
+          <div class="kpi-value">574</div>
+          <div class="kpi-change up">▲ 8 new this year</div>
+        </div>
       </div>
 
-      <div class="chart-card">
-        <div class="chart-title">Year-wise Transaction Value</div>
-        <div class="chart-sub">₹ in Crores · FY wise</div>
-        <div class="bar-wrap">
-          <div class="bar-col"><div class="bar-val">2.1L</div><div class="bar" style="height:30%"></div><div class="bar-label">FY19</div></div>
-          <div class="bar-col"><div class="bar-val">3.6L</div><div class="bar" style="height:42%"></div><div class="bar-label">FY20</div></div>
-          <div class="bar-col"><div class="bar-val">5.5L</div><div class="bar" style="height:55%"></div><div class="bar-label">FY21</div></div>
-          <div class="bar-col"><div class="bar-val">8.4L</div><div class="bar" style="height:68%"></div><div class="bar-label">FY22</div></div>
-          <div class="bar-col"><div class="bar-val">13.9L</div><div class="bar" style="height:82%"></div><div class="bar-label">FY23</div></div>
-          <div class="bar-col"><div class="bar-val">20.6L</div><div class="bar" style="height:100%; background:linear-gradient(180deg,#22D3EE,rgba(34,211,238,0.3))"></div><div class="bar-label" style="color:var(--accent2)">FY24</div></div>
+      <div class="charts-row">
+        <div class="chart-card">
+          <div class="chart-title">Monthly Transaction Volume Trend</div>
+          <div class="chart-sub">Millions of transactions · 2016–2024</div>
+          <svg class="chart-svg" viewBox="0 0 600 180" height="180">
+            <defs>
+              <linearGradient id="lineGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#A855F7" stop-opacity="0.4"/>
+                <stop offset="100%" stop-color="#A855F7" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <polyline points="40,152 120,143 200,126 280,98 360,62 440,36 520,24 590,21" fill="none" stroke="#A855F7" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+            <polygon points="40,152 120,143 200,126 280,98 360,62 440,36 520,24 590,21 590,155 40,155" fill="url(#lineGrad)"/>
+          </svg>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">Pipeline Status Summary</div>
+          <div class="chart-sub">Health of Data Layers</div>
+          <div style="margin-top:20px">
+            <div style="margin-bottom:10px">🟢 Bronze: Healthy</div>
+            <div style="margin-bottom:10px">🟢 Silver: Cleaned</div>
+            <div>🟡 Gold: Processing</div>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="bottom-row">
+    <div id="screen-lineage" class="view-screen" style="display:none;">
       <div class="chart-card">
-        <div class="chart-title">Peak Month Heatmap</div>
-        <div class="chart-sub">Transaction intensity by month</div>
-        <div style="margin-top:12px">
-          <div style="font-size:10px;color:var(--sub);margin-bottom:6px">FY 2023-24</div>
-          <div class="heatmap-grid">
-            <div class="heatmap-cell h2">A</div><div class="heatmap-cell h3">M</div><div class="heatmap-cell h3">J</div>
-            <div class="heatmap-cell h4">J</div><div class="heatmap-cell h3">A</div><div class="heatmap-cell h4">S</div>
-            <div class="heatmap-cell h5">O</div><div class="heatmap-cell h4">N</div><div class="heatmap-cell h3">D</div>
-            <div class="heatmap-cell h5">J</div><div class="heatmap-cell h4">F</div><div class="heatmap-cell h5">M</div>
+        <div class="chart-title">System Data Lineage</div>
+        <div class="chart-sub">Traceability map from Source to Gold Layer</div>
+        <div style="display: flex; flex-direction: column; gap: 20px; padding: 20px;">
+          <div class="kpi-card" style="border-left: 5px solid #CD7F32;">
+            <strong>Bronze Layer</strong><br/>
+            <small>Raw Ingestion via dlt ➔ stg_raw_upi</small>
           </div>
-          <div class="month-labels">
-            <div class="month-label">Apr</div><div class="month-label">May</div><div class="month-label">Jun</div>
-            <div class="month-label">Jul</div><div class="month-label">Aug</div><div class="month-label">Sep</div>
-            <div class="month-label">Oct</div><div class="month-label">Nov</div><div class="month-label">Dec</div>
-            <div class="month-label">Jan</div><div class="month-label">Feb</div><div class="month-label">Mar</div>
+          <div style="text-align: center; color: var(--accent);">⬇</div>
+          <div class="kpi-card" style="border-left: 5px solid #C0C0C0;">
+            <strong>Silver Layer</strong><br/>
+            <small>Cleaning & Type Casting ➔ cleaned_upi</small>
+          </div>
+          <div style="text-align: center; color: var(--accent);">⬇</div>
+          <div class="kpi-card" style="border-left: 5px solid #FFD700;">
+            <strong>Gold Layer</strong><br/>
+            <small>Business Metrics Aggregation ➔ monthly_business_metrics</small>
           </div>
         </div>
       </div>
+    </div>
 
+    <div id="screen-logs" class="view-screen" style="display:none;">
       <div class="chart-card">
-        <div class="chart-title">Month-over-Month Growth</div>
-        <div class="chart-sub">Volume & Value growth % · Recent months</div>
+        <div class="chart-title">Pipeline Execution Logs</div>
         <table class="mom-table">
-          <thead><tr><th>Month</th><th>Vol Growth</th><th>Val Growth</th></tr></thead>
+          <thead><tr><th>Timestamp</th><th>Module</th><th>Status</th></tr></thead>
           <tbody>
-            <tr><td>Oct 2023</td><td class="up">▲ 7.2%</td><td class="up">▲ 9.1%</td></tr>
-            <tr><td>Nov 2023</td><td class="up">▲ 5.8%</td><td class="up">▲ 6.4%</td></tr>
-            <tr><td>Dec 2023</td><td class="down">▼ 2.1%</td><td class="up">▲ 3.2%</td></tr>
-            <tr><td>Jan 2024</td><td class="up">▲ 11.3%</td><td class="up">▲ 14.2%</td></tr>
-            <tr><td>Feb 2024</td><td class="up">▲ 8.9%</td><td class="up">▲ 10.5%</td></tr>
+            <tr><td>2026-04-18 11:10</td><td>process_gold.py</td><td><span style="color:#22C55E">SUCCESS</span></td></tr>
+            <tr><td>2026-04-18 10:52</td><td>process_silver.py</td><td><span style="color:#22C55E">SUCCESS</span></td></tr>
+            <tr><td>2026-04-18 10:30</td><td>ingest_bronze.py</td><td><span style="color:#22C55E">SUCCESS</span></td></tr>
           </tbody>
         </table>
       </div>
-
-      <div class="pipeline-card">
-        <div class="chart-title">Pipeline Status</div>
-        <div class="chart-sub">Medallion Architecture · GCP + BigQuery</div>
-        <div class="layer-row">
-          <div class="layer-left"><div class="layer-dot bronze"></div><div><div class="layer-name">Bronze Layer</div><div class="layer-desc">Raw CSV → GCS · via dlt</div></div></div>
-          <div style="text-align:right"><div class="layer-badge">✓ Active</div><div class="layer-count" style="margin-top:4px">96 records</div></div>
-        </div>
-        <div class="layer-row">
-          <div class="layer-left"><div class="layer-dot silver"></div><div><div class="layer-name">Silver Layer</div><div class="layer-desc">Cleaned · PySpark</div></div></div>
-          <div style="text-align:right"><div class="layer-badge">✓ Active</div><div class="layer-count" style="margin-top:4px">94 records</div></div>
-        </div>
-      </div>
     </div>
+
   </div>
 </main>
 
 <script>
-  // 1. Grab our elements directly
-  const themeBtn = document.getElementById('theme-btn');
-  const body = document.getElementById('body');
-  const toggleIcon = document.getElementById('toggle-icon');
-  const toggleText = document.getElementById('toggle-text');
-  
+  function toggleTheme() {
+    document.body.classList.toggle('light');
+    const isLight = document.body.classList.contains('light');
+    document.getElementById('toggle-icon').textContent = isLight ? '🌙' : '☀️';
+    document.getElementById('toggle-text').textContent = isLight ? 'Dark' : 'Light';
+  }
+  document.getElementById('theme-btn').onclick = toggleTheme;
+
   const navItems = document.querySelectorAll('.nav-item');
-  const contentArea = document.querySelector('.content');
-  const overviewHTML = contentArea.innerHTML;
-
-  // 2. Attach Theme Toggle (Raw onclick, no event listeners to get trapped)
-  themeBtn.onclick = function() {
-      if (body.classList.contains('light')) {
-          body.classList.remove('light');
-          toggleIcon.textContent = '☀️';
-          toggleText.textContent = 'Light';
-      } else {
-          body.classList.add('light');
-          toggleIcon.textContent = '🌙';
-          toggleText.textContent = 'Dark';
-      }
-  };
-
-  // 3. Attach Sidebar Logic
-  const trendHTML = `
-    <div class="kpi-card" style="margin-bottom: 20px;">
-      <div class="chart-title">Trend Analysis Module</div>
-      <div class="chart-sub">System connected to historical data.</div>
-      <div style="height: 300px; display: flex; align-items: center; justify-content: center; color: var(--sub); border: 1px dashed var(--border); border-radius: 10px; margin-top: 20px;">
-         [ Looker Studio Dashboard Embedded Here ]
-      </div>
-    </div>
-  `;
+  const screens = document.querySelectorAll('.view-screen');
 
   navItems.forEach(item => {
-      // Ignore the theme button for sidebar highlighting
-      if (item.id === 'theme-btn') return;
+    if (item.id === 'theme-btn') return;
+    item.onclick = function() {
+      navItems.forEach(nav => nav.classList.remove('active'));
+      this.classList.add('active');
+      screens.forEach(s => s.style.display = 'none');
 
-      item.onclick = function() {
-          // Remove active from all sidebar items
-          navItems.forEach(nav => {
-              if (nav.id !== 'theme-btn') nav.classList.remove('active');
-          });
-          
-          this.classList.add('active');
-
-          // Swap content
-          if (this.textContent.includes('Overview')) {
-              contentArea.innerHTML = overviewHTML;
-          } else if (this.textContent.includes('Trend Analysis')) {
-              contentArea.innerHTML = trendHTML;
-          } else {
-              contentArea.innerHTML = '<div class="chart-title" style="padding: 20px;">Module in Development...</div>';
-          }
-      };
+      const text = this.textContent.toLowerCase();
+      if (text.includes('overview')) {
+        document.getElementById('screen-overview').style.display = 'block';
+      } else if (text.includes('data layers')) {
+        document.getElementById('screen-lineage').style.display = 'block';
+      } else if (text.includes('logs')) {
+        document.getElementById('screen-logs').style.display = 'block';
+      }
+    };
   });
 </script>
 </body>
-</html>
