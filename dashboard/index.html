@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PayFlow | Engineering Console</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg: #0f172a; /* Dark Slate */
+            --card: #1e293b;
+            --mint: #4ade80; /* Clean Mint */
+            --text: #f8fafc;
+            --border: #334155;
+        }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; }
+        nav { width: 250px; height: 100vh; background: var(--card); border-right: 1px solid var(--border); padding: 20px; position: fixed; }
+        .main { margin-left: 270px; padding: 40px; width: 100%; }
+        .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px; }
+        .card { background: var(--card); padding: 20px; border-radius: 8px; border: 1px solid var(--border); }
+        .mint-text { color: var(--mint); font-weight: bold; font-size: 24px; }
+        .btn-nav { display: block; padding: 12px; color: var(--text); text-decoration: none; border-radius: 5px; margin-bottom: 10px; }
+        .btn-nav:hover { background: var(--border); border-left: 4px solid var(--mint); }
+        canvas { max-width: 100%; height: 300px !important; }
+    </style>
+</head>
+<body>
+    <nav>
+        <h2>PayFlow <span style="color: var(--mint)">DE</span></h2>
+        <a href="#" class="btn-nav">Pipeline Overview</a>
+        <a href="#" class="btn-nav">Bronze Explorer</a>
+        <a href="#" class="btn-nav">Silver Transformation</a>
+        <a href="#" class="btn-nav">Gold Analytics</a>
+        <div style="margin-top: 50px; font-size: 12px; color: #94a3b8;">
+            Pipeline Status: <span style="color: var(--mint)">● ACTIVE</span>
+        </div>
+    </nav>
+    <div class="main">
+        <div class="kpi-grid">
+            <div class="card">Total Rows Ingested <div class="mint-text">2.4M</div></div>
+            <div class="card">Avg. Processing Latency <div class="mint-text">142ms</div></div>
+            <div class="card">Data Quality Score <div class="mint-text">99.9%</div></div>
+        </div>
+        <div class="card">
+            <h3>UPI Transaction Volume (Millions)</h3>
+            <canvas id="mainChart"></canvas>
+        </div>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('mainChart').getContext('2d');
+        // This will fetch from your real data.json tomorrow
+        fetch('data.json').then(res => res.json()).then(jsonData => {
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: jsonData.map(d => d.month),
+                    datasets: [{
+                        label: 'Transaction Volume',
+                        data: jsonData.map(d => d.volume),
+                        borderColor: '#4ade80',
+                        backgroundColor: 'rgba(74, 222, 128, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: { 
+                    plugins: { legend: { labels: { color: '#f8fafc' } } },
+                    scales: { 
+                        y: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } },
+                        x: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

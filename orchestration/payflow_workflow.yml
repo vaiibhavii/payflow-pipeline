@@ -1,0 +1,49 @@
+id: payflow_pipeline
+namespace: payflow.production
+
+description: |
+  PayFlow end-to-end pipeline orchestration.
+  Runs daily at 6AM IST. Ingests NPCI data,
+  transforms through Medallion layers, exports to dashboard.
+
+triggers:
+  - id: daily_schedule
+    type: io.kestra.core.models.triggers.types.Schedule
+    cron: "0 6 * * *"
+
+tasks:
+  - id: ingest_bronze
+    type: io.kestra.core.tasks.scripts.Python
+    description: "Fetch NPCI data via Kaggle API → Bronze layer (dlt → DuckDB)"
+    script: |
+      import subprocess
+      subprocess.run(["python", "ingestion/ingest_bronze.py"])
+
+  - id: transform_silver
+    type: io.kestra.core.tasks.scripts.Python
+    description: "Clean & validate data → Silver layer"
+    script: |
+      import subprocess
+      subprocess.run(["python", "transformation/process_silver.py"])
+    dependsOn: [ingest_bronze]
+
+  - id: transform_gold
+    type: io.kestra.core.tasks.scripts.Python
+    description: "Business metrics aggregation → Gold layer"
+    script: |
+      import subprocess
+      subprocess.run(["python", "transformation/process_gold.py"])
+    dependsOn: [transform_silver]
+
+  - id: export_dashboard
+    type: io.kestra.core.tasks.scripts.Python
+    description: "Export Gold layer → dashboard JSON"
+    script: |
+      import subprocess
+      subprocess.run(["python", "export_dashboard_data.py"])
+    dependsOn: [transform_gold]
+
+  - id: notify_complete
+    type: io.kestra.core.tasks.log.Log
+    message: "✅ PayFlow pipeline complete. Dashboard data refreshed."
+    dependsOn: [export_dashboard]
