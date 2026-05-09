@@ -1432,7 +1432,35 @@ function toggleTheme(){
   document.getElementById('theme-btn').textContent = isLight?'◑ Dark Mode':'◐ Toggle Theme';
 }
 
-function applyFilter(){/* future: filter charts by year */}
+function applyFilter() {
+    const selectedYear = document.getElementById('year-filter').value;
+    
+    // Determine which dataset to use based on the dropdown
+    let targetLabels = [];
+    let targetValues = [];
+
+    if (selectedYear === 'all') {
+        targetLabels = UPI_HISTORY.labels;
+        targetValues = UPI_HISTORY.volumes;
+    } else {
+        // Filter from the hardcoded history if the DB isn't responding
+        const shortYear = selectedYear.slice(-2); // "2024" -> "24"
+        UPI_HISTORY.labels.forEach((label, i) => {
+            if (label.includes("-" + shortYear)) {
+                targetLabels.push(label);
+                targetValues.push(UPI_HISTORY.volumes[i]);
+            }
+        });
+    }
+
+    // Directly push to the chart object
+    if (charts.mainTrend) {
+        charts.mainTrend.data.labels = targetLabels;
+        charts.mainTrend.data.datasets[0].data = targetValues;
+        charts.mainTrend.update();
+        console.log(`Manual Filter Applied for: ${selectedYear}`);
+    }
+}
 
 // Init first page
 window.addEventListener('DOMContentLoaded',()=>{
